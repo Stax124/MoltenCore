@@ -1,0 +1,14 @@
+# Database
+alembic.ini
+migrations/versions/
+db.sqlite3
+
+# Linters
+pyrightconfig.json
+
+# Plugins
+plugins/
+
+# Python specific stuff
+**/__pycache__
+poetry.lock
