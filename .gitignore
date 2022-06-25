@@ -12,3 +12,4 @@ plugins/
 # Python specific stuff
 **/__pycache__
 poetry.lock
+test.py
