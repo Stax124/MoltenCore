@@ -12,11 +12,18 @@ from discord.ext.commands.errors import (ExtensionAlreadyLoaded,
 from pretty_help import PrettyHelp
 from rich.traceback import install as install_traceback
 from sqlmodel import Session, select
+from sqlmodel.sql.expression import Select, SelectOfScalar
 
+from core.plugin import Plugin
+from core.plugin_handler import PluginHandler
 from db import generate_engine, get_session
 from models.guild import Guild
 
 install_traceback() # Installs better error logging
+
+# Fix sqlalchemy caching with sqlmodel
+SelectOfScalar.inherit_cache = True # type: ignore
+Select.inherit_cache = True # type: ignore
 
 # Command line interface handling
 parser = argparse.ArgumentParser(
@@ -26,6 +33,8 @@ parser.add_argument("-l", "--logging",  default="INFO",
 parser.add_argument("-f", "--file", type=str, help="Filename for logging")
 parser.add_argument("--token", default=os.environ.get("TRINITY"), type=str,
                     help="Discord API token: Get yours at https://discord.com/developers/applications")
+parser.add_argument("--enable-rce", action="store_true", help="Enable remote code execution for owner for fast debugging")
+parser.add_argument("--disable-plugins", action="store_true", help="Disable plugins")
 args = parser.parse_args()
 
 
@@ -52,13 +61,6 @@ default_extensions = ["extensions."+i.replace(".py", "")
 
 if not os.path.exists("plugins"):
     os.makedirs("plugins")
-        
-if not os.path.exists("plugins/plugins.json"):
-    with open("plugins/plugins.json", "w") as f:
-        f.write("{}")
-            
-    
-
 
 def get_prefix(bot: "ModularBot", msg: discord.Message):
     if msg.channel.type == discord.ChannelType.private:
@@ -78,122 +80,134 @@ def get_prefix(bot: "ModularBot", msg: discord.Message):
 
 
 class ModularBot(AutoShardedBot):
-    def __init__(self):
+    def __init__(self, enable_rce: bool = False, disable_plugins: bool = False):
         super().__init__(
             command_prefix=get_prefix,  # type: ignore
             help_command=PrettyHelp(
                 color=0xffff00, show_index=True, sort_commands=True),
             intents=discord.Intents.all()
         )
-
-        # Variables
+        
+        # State of the bot
         self.paused: bool = False
         self.__version__: str = "0.0.1alpha"
+        
+        # For type safety
         self.avatar_url: str = ""  # Will get set when the bot is ready
-
+        
         # Database stuff
         self.engine = generate_engine()
         self.database: Session = get_session(self.engine)
+        
+        # Plugins
+        self.plugins: list[Plugin] = []
+        self.plugin_handler: PluginHandler = PluginHandler(self)
+        
+        if not disable_plugins:
+            self.plugin_handler.populate_plugins()
+            self.plugin_handler.load_all_plugins()
+
+        # RCE
+        self.enable_rce: bool = enable_rce
 
     def run(self, token: str, *, bot: bool = True, reconnect: bool = True):
         super().run(token, bot=bot, reconnect=reconnect)
         self.avatar_url = str(self.user.avatar_url)
 
-
-bot = ModularBot()
-
-
-@bot.command(name="reload")
-@commands.is_owner()
-async def command_reload_extension(ctx: Context, extension: str):
-    try:
-        bot.reload_extension("extensions."+extension)
-        logging.info(f"{extension} reloaded")
-        embed = discord.Embed(
-            color=0x00ff00, description=f"{extension} reloaded")
-        embed.set_author(name="Reload", icon_url=bot.avatar_url)
-    except ExtensionNotFound:
-        logging.error(f"{extension} not found")
-        embed = discord.Embed(
-            color=0xff0000, description=f"{extension} not found")
-        embed.set_author(name="Reload", icon_url=bot.avatar_url)
-
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="load")
-@commands.is_owner()
-async def command_load_extension(ctx: Context, extension: str):
-    try:
-        bot.load_extension("extensions."+extension)
-        logging.info(f"{extension} loaded")
-        embed = discord.Embed(
-            color=0x00ff00, description=f"{extension} loaded")
-        embed.set_author(name="Load", icon_url=bot.avatar_url)
-    except ExtensionAlreadyLoaded:
-        logging.warn(f"{extension} already loaded")
-        embed = discord.Embed(
-            color=0xff0000, description=f"{extension} already loaded")
-        embed.set_author(name="Load", icon_url=bot.avatar_url)
-    except ExtensionNotFound:
-        logging.error(f"{extension} not found")
-        embed = discord.Embed(
-            color=0xff0000, description=f"{extension} not found")
-        embed.set_author(name="Load", icon_url=bot.avatar_url)
-
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="unload")
-@commands.is_owner()
-async def command_unload_extension(ctx: Context, extension: str):
-    try:
-        bot.unload_extension("extensions."+extension)
-        logging.info(f"{extension} unloaded")
-        embed = discord.Embed(
-            color=0x00ff00, description=f"{extension} unloaded")
-        embed.set_author(name="Unload", icon_url=bot.avatar_url)
-    except ExtensionNotFound:
-        logging.error(f"{extension} not found")
-        embed = discord.Embed(
-            color=0xff0000, description=f"{extension} not found")
-        embed.set_author(name="Unload", icon_url=bot.avatar_url)
-    except ExtensionNotLoaded:
-        logging.error(f"{extension} not found")
-        embed = discord.Embed(
-            color=0xff0000, description=f"{extension} exists, but is not loaded")
-        embed.set_author(name="Unload", icon_url=bot.avatar_url)
-
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="reload-all")
-@commands.is_owner()
-async def command_reload_all_extensions(ctx: Context):
-    all_extensions = ["extensions."+i.replace(".py", "")
-                      for i in os.listdir("extensions") if i.endswith(".py")]
-
-    ok = True
-
-    for extension in all_extensions:
+if __name__ == "__main__":
+    bot = ModularBot(enable_rce=args.enable_rce, disable_plugins=args.disable_plugins)
+    
+    @bot.command(name="reload")
+    @commands.is_owner()
+    async def command_reload_extension(ctx: Context, extension: str):
         try:
-            bot.reload_extension(extension)
+            bot.reload_extension("extensions."+extension)
             logging.info(f"{extension} reloaded")
+            embed = discord.Embed(
+                color=0x00ff00, description=f"{extension} reloaded")
+            embed.set_author(name="Reload", icon_url=bot.avatar_url)
         except ExtensionNotFound:
-            ok = False
             logging.error(f"{extension} not found")
             embed = discord.Embed(
                 color=0xff0000, description=f"{extension} not found")
+            embed.set_author(name="Reload", icon_url=bot.avatar_url)
+
+        await ctx.send(embed=embed)
+
+
+    @bot.command(name="load")
+    @commands.is_owner()
+    async def command_load_extension(ctx: Context, extension: str):
+        try:
+            bot.load_extension("extensions."+extension)
+            logging.info(f"{extension} loaded")
+            embed = discord.Embed(
+                color=0x00ff00, description=f"{extension} loaded")
+            embed.set_author(name="Load", icon_url=bot.avatar_url)
+        except ExtensionAlreadyLoaded:
+            logging.warn(f"{extension} already loaded")
+            embed = discord.Embed(
+                color=0xff0000, description=f"{extension} already loaded")
+            embed.set_author(name="Load", icon_url=bot.avatar_url)
+        except ExtensionNotFound:
+            logging.error(f"{extension} not found")
+            embed = discord.Embed(
+                color=0xff0000, description=f"{extension} not found")
+            embed.set_author(name="Load", icon_url=bot.avatar_url)
+
+        await ctx.send(embed=embed)
+
+
+    @bot.command(name="unload")
+    @commands.is_owner()
+    async def command_unload_extension(ctx: Context, extension: str):
+        try:
+            bot.unload_extension("extensions."+extension)
+            logging.info(f"{extension} unloaded")
+            embed = discord.Embed(
+                color=0x00ff00, description=f"{extension} unloaded")
+            embed.set_author(name="Unload", icon_url=bot.avatar_url)
+        except ExtensionNotFound:
+            logging.error(f"{extension} not found")
+            embed = discord.Embed(
+                color=0xff0000, description=f"{extension} not found")
+            embed.set_author(name="Unload", icon_url=bot.avatar_url)
+        except ExtensionNotLoaded:
+            logging.error(f"{extension} exists, but is not loaded")
+            embed = discord.Embed(
+                color=0xff0000, description=f"{extension} exists, but is not loaded")
+            embed.set_author(name="Unload", icon_url=bot.avatar_url)
+
+        await ctx.send(embed=embed)
+
+
+    @bot.command(name="reload-all")
+    @commands.is_owner()
+    async def command_reload_all_extensions(ctx: Context):
+        all_extensions = ["extensions."+i.replace(".py", "")
+                        for i in os.listdir("extensions") if i.endswith(".py")]
+
+        ok = True
+
+        for extension in all_extensions:
+            try:
+                bot.reload_extension(extension)
+                logging.info(f"{extension} reloaded")
+            except ExtensionNotFound:
+                ok = False
+                logging.error(f"{extension} not found")
+                embed = discord.Embed(
+                    color=0xff0000, description=f"{extension} not found")
+                embed.set_author(name="Reload All", icon_url=bot.avatar_url)
+
+        if ok:
+            embed = discord.Embed(
+                color=0x00ff00, description=f"All extensions reloaded")
             embed.set_author(name="Reload All", icon_url=bot.avatar_url)
 
-    if ok:
-        embed = discord.Embed(
-            color=0x00ff00, description=f"All extensions reloaded")
-        embed.set_author(name="Reload All", icon_url=bot.avatar_url)
+        await ctx.send(embed=embed)
 
-    await ctx.send(embed=embed)
-
-if __name__ == "__main__":
+    
     for extension in default_extensions:
         bot.load_extension(extension)
         logging.info(f"{extension} loaded")

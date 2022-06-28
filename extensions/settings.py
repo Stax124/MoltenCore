@@ -14,7 +14,7 @@ from models.guild import Guild
 class Settings(commands.Cog):
     "Settings"
 
-    def __init__(self, bot: ModularBot):
+    def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
     @commands.command(name="version")

@@ -11,7 +11,10 @@ if TYPE_CHECKING:
     from main import ModularBot
 
 class Plugin():
-    def __init__(self, plugin_data: PluginData, bot: ModularBot) -> None:
+    "Plugin for Discord bot, manages the state and files"
+    
+    def __init__(self, plugin_data: PluginData, bot: "ModularBot") -> None:
+
         # Plugin data
         self.version = plugin_data.version
         self.name = plugin_data.name
@@ -20,6 +23,9 @@ class Plugin():
         self.folder_name = plugin_data.folder_name
         self.enabled = plugin_data.enabled
         self.id = plugin_data.id
+
+        # Logger
+        self.logger = logging.getLogger("plugin."+self.name)
 
         # Bot needs to be here to access the database
         self.bot = bot
@@ -30,34 +36,75 @@ class Plugin():
         
         # Get all files required for this plugin
         self.files: dict[str, str] = self._get_files()
-        self.local, self.non_local_files = self._exists_localy()
+        self.empty: bool = len(self.files) == 0
+        self.local, self.non_local_files, self.local_files = self._exists_localy()
         
-        if not self.local:
-            self.download()
+        # If no files are found and can't be downloaded, disable the plugin
+        if self.empty:
+            self.logger.warning(f"{self.name} has no files, it will not be loaded")
+            self.enabled = False
+        
+        # If files are missing and can be downloaded, download them
+        if not self.local and not self.empty:
+            self._download()
     
-    def download(self):
-        logging.info(termcolor.colored(f'Downloading {self.name}', 'orange'))
-        for file in self.non_local_files:
-            file, link = file[0], file[1]
-            logging.info(f"Downloading {file}")
+    def generate_safe_path(self, path: str) -> str:
+        "Generates a safe path for module loading"
+        
+        return f'plugins.{self.folder_name}.{path.replace(".plugin.py", "").replace(" ", "_").replace("-", "_").replace(".", "_").replace("/", ".")}'
+    
+    def _download(self):
+        "Downloads the necessary files for this plugin"
+        
+        try:
+            self.logger.info(termcolor.colored(f'Downloading files for plugin `{self.name}`', 'yellow'))
             
-            r = requests.get(link)
-            
-            os.makedirs(f'plugins/{self.folder_name}/{file}', exist_ok=True) # Make all necessary folders
-            
-            with open(f'plugins/{self.folder_name}/{file}', 'wb') as f: # Download the file
-                f.write(r.content)
+            for file in self.non_local_files:
+                file, link = file[0], file[1]
+                self.logger.info(f"Downloading {file}")
                 
-            logging.info(termcolor.colored(f'Downloaded {self.name}', 'green'))
+                r = requests.get(link)
+                
+                os.makedirs(os.path.dirname(f'plugins/{self.folder_name}/{file}'), exist_ok=True) # Make all necessary folders
+                
+                with open(f'plugins/{self.folder_name}/{file}', 'wb') as f: # Download the file
+                    f.write(r.content)
+                    
+                self.logger.info(termcolor.colored(f'Downloaded {file}', 'green'))
+                self.local_files.append(file)
+                
+        except ConnectionError as e:
+            self.logger.error(termcolor.colored(f'Could not download {self.name}: {e}', 'red'))
     
     def load(self):
-        pass
+        "Loads the plugin files"
+        
+        self.logger.info(f"Loading plugin {self.name}")
+        self.logger.debug(f"Files: {self.local_files}")
+        
+        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+            self.logger.debug(f"Loading file {pythonpath}")
+            self.bot.load_extension(pythonpath)
 
     def unload(self):
-        pass
+        "Unloads the plugin files"
+        
+        self.logger.info(f"Unloading plugin {self.name}")
+        self.logger.debug(f"Files: {self.local_files}")
+        
+        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+            self.logger.debug(f"Unloading file {pythonpath}")
+            self.bot.unload_extension(pythonpath)
         
     def reload(self):
-        pass
+        "Reloads the plugin files"
+        
+        self.logger.info(f"Reloading plugin {self.name}")
+        self.logger.debug(f"Files: {self.local_files}")
+        
+        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+            self.logger.debug(f"Reloading file {pythonpath}")
+            self.bot.reload_extension(pythonpath)
     
     def _get_files(self):
         "Populates all files required for this plugin"
@@ -65,17 +112,20 @@ class Plugin():
         plugin_files = self.bot.database.exec(select(PluginFiles).where(PluginFiles.plugin_id == self.id)).all()
         return {file.file: file.file_url for file in plugin_files}
 
-    def _exists_localy(self) -> tuple[bool, list[tuple[str, str]]]:
+    def _exists_localy(self) -> tuple[bool, list[tuple[str, str]], list[str]]:
         "Checks if the plugin is installed locally, if not, returns a list of tuples (file: str, url: str) that are missing"
         
         local = True
-        non_local: list[tuple[str, str]] = []
+        non_local_files: list[tuple[str, str]] = []
+        local_files: list[str] = []
         
-        for i in self.files:
-            file, link = i[0], i[1]
+        for file in self.files:
+            link = self.files[file]
             
-            if not os.path.exists(f'plugins/{file}'):
-                non_local.append((file, link))
+            if not os.path.exists(f'plugins/{self.folder_name}/{file}'):
+                non_local_files.append((file, link))
                 local = False
-                
-        return local, non_local
+            else:
+                local_files.append(file)
+        
+        return local, non_local_files, local_files

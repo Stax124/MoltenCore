@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import asyncio
 import logging
-import os
 import sys
 from typing import TYPE_CHECKING
 
@@ -44,24 +42,24 @@ class Owner(commands.Cog):
     @commands.is_owner()
     @commands.command(name="eval", help="Evaluate string", pass_context=True)  # type: ignore
     async def eval(self, ctx: Context, *, message: str):
-        try:
-            await ctx.send(eval(message))
-        except Exception as e:
-            await ctx.send(e)
+        if self.bot.enable_rce:
+            try:
+                await ctx.send(eval(message))
+            except Exception as e:
+                await ctx.send(e)
+        else:
+            await ctx.send("RCE disabled by default")
 
     @commands.is_owner()
     @commands.command(name="exec", help="Execute string", pass_context=True)  # type: ignore
     async def exec(self, ctx: Context, *, message: str):
-        await ctx.send(exec(message))
-
-    @commands.command(name="update", help="Update the bot", pass_context=True)  # type: ignore
-    @commands.is_owner()
-    async def update_bot(self, ctx: Context):
-        if os.system("git pull") == 0:
-            await ctx.send("Update successful")
+        if self.bot.enable_rce:
+            try:
+                await ctx.send(exec(message))
+            except Exception as e:
+                await ctx.send(e)
         else:
-            await ctx.send("Update failed")
-
+            await ctx.send("RCE disabled by default")
 
 def setup(bot: "ModularBot"):
     bot.add_cog(Owner(bot))

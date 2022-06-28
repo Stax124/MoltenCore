@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class Events(commands.Cog):
 
-    def __init__(self, bot: ModularBot):
+    def __init__(self, bot: "ModularBot"):
         @bot.event
         async def on_message(message):
             if not message.author == bot.user:
@@ -49,5 +49,5 @@ class Events(commands.Cog):
                 raise error
 
 
-def setup(bot: ModularBot):
+def setup(bot: "ModularBot"):
     bot.add_cog(Events(bot))

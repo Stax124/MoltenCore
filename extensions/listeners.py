@@ -40,7 +40,7 @@ class Listeners(commands.Cog):
                 self.bot.database.commit()
 
         await self.bot.change_presence(
-            activity=Activity(type=ActivityType.listening, name="for commands"))
+            activity=Activity(type=ActivityType.listening, name="commands"))
 
     @commands.Cog.listener()
     async def on_disconnect(self):
