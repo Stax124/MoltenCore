@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 import requests
 import termcolor
+from discord.ext.commands.errors import (ExtensionFailed, ExtensionNotFound,
+                                         ExtensionNotLoaded, NoEntryPointError)
 from models.plugins import PluginData, PluginFiles
 from sqlmodel import select
 
@@ -79,33 +81,56 @@ class Plugin():
     def load(self):
         "Loads the plugin files"
         
-        self.logger.info(f"Loading plugin {self.name}")
-        self.logger.debug(f"Files: {self.local_files}")
-        
-        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
-            self.logger.debug(f"Loading file {pythonpath}")
-            self.bot.load_extension(pythonpath)
+        try:
+            self.logger.info(f"Loading plugin {self.name}")
+            self.logger.debug(f"Files: {self.local_files}")
+            
+            for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+                self.logger.debug(f"Loading file {pythonpath}")
+                self.bot.load_extension(pythonpath)
+                
+        except (ExtensionFailed, ExtensionNotFound, ExtensionNotLoaded, NoEntryPointError) as e:
+            self.enabled = False
+            self.logger.error(f"{type(e).__name__}: Could not load plugin {self.name}")
 
     def unload(self):
         "Unloads the plugin files"
         
-        self.logger.info(f"Unloading plugin {self.name}")
-        self.logger.debug(f"Files: {self.local_files}")
-        
-        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
-            self.logger.debug(f"Unloading file {pythonpath}")
-            self.bot.unload_extension(pythonpath)
-        
+        try:
+            self.logger.info(f"Unloading plugin {self.name}")
+            self.logger.debug(f"Files: {self.local_files}")
+            
+            for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+                self.logger.debug(f"Unloading file {pythonpath}")
+                self.bot.unload_extension(pythonpath)
+                
+        except (ExtensionNotFound, ExtensionNotLoaded) as e:
+            self.enabled = False
+            self.logger.error(f"{type(e).__name__}: Could not unload plugin {self.name}")
+
     def reload(self):
         "Reloads the plugin files"
         
-        self.logger.info(f"Reloading plugin {self.name}")
-        self.logger.debug(f"Files: {self.local_files}")
-        
-        for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
-            self.logger.debug(f"Reloading file {pythonpath}")
-            self.bot.reload_extension(pythonpath)
+        try:
+            self.logger.info(f"Reloading plugin {self.name}")
+            self.logger.debug(f"Files: {self.local_files}")
+            
+            for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
+                self.logger.debug(f"Reloading file {pythonpath}")
+                self.bot.reload_extension(pythonpath)
+                
+        except (ExtensionFailed, ExtensionNotFound, ExtensionNotLoaded, NoEntryPointError) as e:
+            self.enabled = False
+            self.logger.error(f"{type(e).__name__}: Could not reload plugin {self.name}")
     
+    def enable(self):
+        self.enabled = True
+        self.bot.database.query(PluginData).filter_by(id=self.id).update({PluginData.enabled: True})
+    
+    def disable(self):
+        self.enabled = False
+        self.bot.database.query(PluginData).filter_by(id=self.id).update({PluginData.enabled: False})
+        
     def _get_files(self):
         "Populates all files required for this plugin"
         
