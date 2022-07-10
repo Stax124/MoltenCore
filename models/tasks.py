@@ -1,5 +1,3 @@
-
-
 from sqlmodel import BigInteger, Column, Field, SQLModel
 
 
@@ -10,6 +8,7 @@ class ScheduledTask(SQLModel, table=True):
     type: str
     data: str
     execute_on: float
+
 
 class RepeatedTask(SQLModel, table=True):
     id: int = Field(sa_column=Column(BigInteger(), primary_key=True), default=None)

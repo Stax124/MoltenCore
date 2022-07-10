@@ -40,7 +40,8 @@ class Listeners(commands.Cog):
                 self.bot.database.commit()
 
         await self.bot.change_presence(
-            activity=Activity(type=ActivityType.listening, name="commands"))
+            activity=Activity(type=ActivityType.listening, name="commands")
+        )
 
     @commands.Cog.listener()
     async def on_disconnect(self):
@@ -53,7 +54,11 @@ class Listeners(commands.Cog):
             self.bot.database.add(Guild(id=guild.id))
             self.bot.database.commit()
 
-        await self.bot.change_presence(activity=Activity(name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching))
+        await self.bot.change_presence(
+            activity=Activity(
+                name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching
+            )
+        )
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
@@ -62,9 +67,17 @@ class Listeners(commands.Cog):
             self.bot.database.query(Guild).filter_by(id=guild.id).delete()
             self.bot.database.commit()
 
-        await self.bot.change_presence(activity=Activity(name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching))
+        await self.bot.change_presence(
+            activity=Activity(
+                name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching
+            )
+        )
 
-        await self.bot.change_presence(activity=Activity(name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching))
+        await self.bot.change_presence(
+            activity=Activity(
+                name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching
+            )
+        )
 
 
 def setup(bot):

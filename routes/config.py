@@ -7,6 +7,7 @@ router = APIRouter(tags=["config"])
 engine = generate_engine()
 db = get_session(engine)
 
+
 @router.get("/config")
 async def config():
     return db.exec(select(Config)).all().__str__()

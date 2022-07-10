@@ -7,10 +7,12 @@ router = APIRouter(tags=["guild"])
 engine = generate_engine()
 db = get_session(engine)
 
-@router.get('/guild/{guild_id}')
+
+@router.get("/guild/{guild_id}")
 async def guild(guild_id: int):
     return db.exec(select(Guild).where(Guild.id == guild_id)).all().__str__()
 
-@router.get('/guilds')
+
+@router.get("/guilds")
 async def guilds():
     return db.exec(select(Guild)).all().__str__()

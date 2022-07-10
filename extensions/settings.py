@@ -25,53 +25,56 @@ class Settings(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: Context, prefix: str):
         if await confirm(self.bot, ctx, message=f"Set prefix to `{prefix}` ?"):
-            
+
             # Change prefix in database
             if ctx.guild is not None:
-                if self.bot.database.query(Guild).filter_by(id=ctx.guild.id).first() is not None:
+                if (
+                    self.bot.database.query(Guild).filter_by(id=ctx.guild.id).first()
+                    is not None
+                ):
                     logging.info(
-                        f"Updating prefix for guild {ctx.guild.name} to `{prefix}`")
-                    self.bot.database.query(Guild).filter_by(
-                        id=ctx.guild.id).update({Guild.prefix: prefix})
+                        f"Updating prefix for guild {ctx.guild.name} to `{prefix}`"
+                    )
+                    self.bot.database.query(Guild).filter_by(id=ctx.guild.id).update(
+                        {Guild.prefix: prefix}
+                    )
                     self.bot.database.commit()
 
-    
-    @commands.command(name="pause", help="Show the bot, whos da boss: shutdown", pass_context=True) # type: ignore
+    @commands.command(name="pause", help="Show the bot, whos da boss: shutdown", pass_context=True)  # type: ignore
     @commands.is_owner()
     async def pause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Pause process ?")
         if not confirmed:
             return
 
-        embed = discord.Embed(
-            colour=0x00ff00,
-            description="✅ Paused..."
-        )
+        embed = discord.Embed(colour=0x00FF00, description="✅ Paused...")
         embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
         await ctx.send(embed=embed)
         self.bot.paused = True
         logging.info("Paused...")
 
-        await self.bot.change_presence(activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb)
+        await self.bot.change_presence(
+            activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb
+        )
 
-    
-    @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown", pass_context=True) # type: ignore
+    @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown", pass_context=True)  # type: ignore
     @commands.is_owner()
     async def unpause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Unpause process ?")
         if not confirmed:
             return
 
-        embed = discord.Embed(
-            colour=0x00ff00,
-            description="✅ Unpaused..."
-        )
+        embed = discord.Embed(colour=0x00FF00, description="✅ Unpaused...")
         embed.set_author(name="Unpause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
         await ctx.send(embed=embed)
         self.bot.paused = False
         logging.info("Unpaused...")
 
-        await self.bot.change_presence(activity=Activity(name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching))
+        await self.bot.change_presence(
+            activity=Activity(
+                name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching
+            )
+        )
 
 
 def setup(bot):

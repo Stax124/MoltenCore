@@ -18,16 +18,21 @@ class Plugins(commands.Cog):
     @commands.command(name="plugins")
     @commands.is_owner()
     async def plugins(self, ctx: Context):
-   
+
         if not self.bot.plugins:
             embed = ModularEmbed(self.bot, title="No plugins found")
-            embed.set_author(name="Plugins", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(
+                name="Plugins", icon_url=self.bot.user.avatar_url.__str__()
+            )
             await ctx.send(embed=embed)
         else:
             modular_embed = ModularEmbedList(self.bot, ctx, title="Plugins")
             for plugin in self.bot.plugins:
-                modular_embed.add_data(f"{'🟩' if plugin.enabled else '🟥'} {plugin.name}")
+                modular_embed.add_data(
+                    f"{'🟩' if plugin.enabled else '🟥'} {plugin.name}"
+                )
             await modular_embed.build().run()
+
 
 def setup(bot):
     bot.add_cog(Plugins(bot))

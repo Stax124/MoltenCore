@@ -10,8 +10,8 @@ engine = generate_engine()
 db = get_session(engine)
 
 # sqlmodel stuff
-SelectOfScalar.inherit_cache = True # type: ignore
-Select.inherit_cache = True # type: ignore
+SelectOfScalar.inherit_cache = True  # type: ignore
+Select.inherit_cache = True  # type: ignore
 
 app.include_router(config.router)
 app.include_router(guild.router)

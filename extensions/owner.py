@@ -30,15 +30,14 @@ class Owner(commands.Cog):
             return
 
         logging.warning("Shutting down bot")
-        embed = discord.Embed(
-            colour=0x00ff00,
-            description="✅ Shutting down..."
-        )
+        embed = discord.Embed(colour=0x00FF00, description="✅ Shutting down...")
         embed.set_author(name="Shutdown", icon_url=self.bot.user.avatar_url.__str__())
         await ctx.send(embed=embed)
         logging.info("Shutting down...")
 
-        await self.bot.change_presence(activity=discord.Game(name=f"Shutting down..."), status=Status.offline)
+        await self.bot.change_presence(
+            activity=discord.Game(name=f"Shutting down..."), status=Status.offline
+        )
         sys.exit()
 
     @commands.is_owner()
@@ -62,6 +61,7 @@ class Owner(commands.Cog):
                 await ctx.send(e)
         else:
             await ctx.send("RCE disabled by default")
+
 
 def setup(bot: "ModularBot"):
     bot.add_cog(Owner(bot))
