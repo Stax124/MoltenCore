@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from typing import TYPE_CHECKING
 
 import discord
@@ -14,7 +15,7 @@ async def confirm(bot: "ModularBot", ctx: Context, message: str, timeout: int = 
             colour=discord.Colour.from_rgb(255, 255, 0),
             description=message
         )
-        embed.set_author(name=author, icon_url=bot.avatar_url)
+        embed.set_author(name=author, icon_url=bot.user.avatar_url.__str__())
 
         msg = await ctx.send(embed=embed)
         await msg.add_reaction("✅")
@@ -33,3 +34,6 @@ async def confirm(bot: "ModularBot", ctx: Context, message: str, timeout: int = 
     except asyncio.TimeoutError:
         await msg.delete()
         return False
+
+def is_in_virtualenv():
+    return sys.prefix != sys.base_prefix

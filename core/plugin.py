@@ -18,19 +18,19 @@ class Plugin():
     def __init__(self, plugin_data: PluginData, bot: "ModularBot") -> None:
 
         # Plugin data
-        self.version = plugin_data.version
-        self.name = plugin_data.name
-        self.description = plugin_data.description
-        self.author = plugin_data.author
-        self.folder_name = plugin_data.folder_name
-        self.enabled = plugin_data.enabled
-        self.id = plugin_data.id
+        self.version: str = plugin_data.version
+        self.name: str = plugin_data.name
+        self.description: str = plugin_data.description
+        self.author: str = plugin_data.author
+        self.folder_name: str = plugin_data.folder_name
+        self.enabled: bool = plugin_data.enabled
+        self.id: int = plugin_data.id
 
         # Logger
         self.logger = logging.getLogger("plugin."+self.name)
 
         # Bot needs to be here to access the database
-        self.bot = bot
+        self.bot: "ModularBot" = bot
         
         # Check if plugin folder exists, if not, create it
         if not os.path.exists(f'plugins/{self.folder_name}'):
@@ -47,15 +47,21 @@ class Plugin():
             self.enabled = False
         
         # If files are missing and can be downloaded, download them
-        if not self.local and not self.empty:
+        if not self.local and not self.empty and not self.enabled:
             self._download()
+    
+    def __repr__(self) -> str:
+        return f"Plugin(name={self.name}, version={self.version}, enabled={self.enabled})"
+    
+    def __str__(self) -> str:
+        return f"Plugin(name={self.name}, version={self.version}, enabled={self.enabled})"
     
     def generate_safe_path(self, path: str) -> str:
         "Generates a safe path for module loading"
         
-        return f'plugins.{self.folder_name}.{path.replace(".plugin.py", "").replace(" ", "_").replace("-", "_").replace(".", "_").replace("/", ".")}'
+        return f'plugins.{self.folder_name}.{path.replace(".py", "").replace(" ", "_").replace("-", "_").replace(".", "_").replace("/", ".")}'
     
-    def _download(self):
+    def _download(self) -> None:
         "Downloads the necessary files for this plugin"
         
         try:
@@ -78,22 +84,30 @@ class Plugin():
         except ConnectionError as e:
             self.logger.error(termcolor.colored(f'Could not download {self.name}: {e}', 'red'))
     
-    def load(self):
+    def load(self) -> bool:
         "Loads the plugin files"
         
-        try:
+        if self.enabled:    
             self.logger.info(f"Loading plugin {self.name}")
             self.logger.debug(f"Files: {self.local_files}")
             
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Loading file {pythonpath}")
-                self.bot.load_extension(pythonpath)
-                
-        except (ExtensionFailed, ExtensionNotFound, ExtensionNotLoaded, NoEntryPointError) as e:
-            self.enabled = False
-            self.logger.error(f"{type(e).__name__}: Could not load plugin {self.name}")
+                try:
+                    self.bot.load_extension(pythonpath)
+                except (ExtensionFailed, ExtensionNotFound, ExtensionNotLoaded, NoEntryPointError) as e:
+                    self.enabled = False
+                    self.logger.error(f"{type(e).__name__}: Could not load {pythonpath}")
+                    return False
+            
+            self.logger.info(termcolor.colored(f"Loaded plugin {self.name}", 'green'))
+            return True
+        
+        else:
+            self.logger.info(f"Plugin {self.name} is disabled, not loading")
+            return False
 
-    def unload(self):
+    def unload(self) -> bool:
         "Unloads the plugin files"
         
         try:
@@ -103,12 +117,15 @@ class Plugin():
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Unloading file {pythonpath}")
                 self.bot.unload_extension(pythonpath)
+            
+            return True
                 
         except (ExtensionNotFound, ExtensionNotLoaded) as e:
             self.enabled = False
             self.logger.error(f"{type(e).__name__}: Could not unload plugin {self.name}")
+            return False
 
-    def reload(self):
+    def reload(self) -> bool:
         "Reloads the plugin files"
         
         try:
@@ -118,20 +135,23 @@ class Plugin():
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Reloading file {pythonpath}")
                 self.bot.reload_extension(pythonpath)
+            
+            return True
                 
         except (ExtensionFailed, ExtensionNotFound, ExtensionNotLoaded, NoEntryPointError) as e:
             self.enabled = False
             self.logger.error(f"{type(e).__name__}: Could not reload plugin {self.name}")
+            return False
     
-    def enable(self):
+    def enable(self) -> None:
         self.enabled = True
         self.bot.database.query(PluginData).filter_by(id=self.id).update({PluginData.enabled: True})
     
-    def disable(self):
+    def disable(self) -> None:
         self.enabled = False
         self.bot.database.query(PluginData).filter_by(id=self.id).update({PluginData.enabled: False})
         
-    def _get_files(self):
+    def _get_files(self) -> dict[str, str]:
         "Populates all files required for this plugin"
         
         plugin_files = self.bot.database.exec(select(PluginFiles).where(PluginFiles.plugin_id == self.id)).all()
@@ -154,3 +174,15 @@ class Plugin():
                 local_files.append(file)
         
         return local, non_local_files, local_files
+
+    def update(self):
+        # TODO: Update the plugin
+        
+        raise NotImplementedError
+
+    def get_requirements(self) -> list[str]:
+        if os.path.exists(f'plugins/{self.folder_name}/requirements.txt'):
+            with open(f'plugins/{self.folder_name}/requirements.txt', 'r') as f:
+                return f.read().splitlines()
+        else:
+            return []

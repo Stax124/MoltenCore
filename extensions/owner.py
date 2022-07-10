@@ -5,10 +5,12 @@ import sys
 from typing import TYPE_CHECKING
 
 import discord
+import models
 from core.functions import confirm
 from discord.enums import Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
+from sqlmodel import select  # For eval
 
 if TYPE_CHECKING:
     from main import ModularBot
@@ -32,7 +34,7 @@ class Owner(commands.Cog):
             colour=0x00ff00,
             description="✅ Shutting down..."
         )
-        embed.set_author(name="Shutdown", icon_url=self.bot.avatar_url)
+        embed.set_author(name="Shutdown", icon_url=self.bot.user.avatar_url.__str__())
         await ctx.send(embed=embed)
         logging.info("Shutting down...")
 

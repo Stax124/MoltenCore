@@ -5,7 +5,6 @@ from core.functions import confirm
 from discord.activity import Activity
 from discord.enums import ActivityType, Status
 from discord.ext import commands
-from discord.ext.commands.bot import AutoShardedBot
 from discord.ext.commands.context import Context
 from main import ModularBot
 from models.guild import Guild
@@ -48,7 +47,7 @@ class Settings(commands.Cog):
             colour=0x00ff00,
             description="✅ Paused..."
         )
-        embed.set_author(name="Pause", icon_url=self.bot.avatar_url)  # type: ignore
+        embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
         await ctx.send(embed=embed)
         self.bot.paused = True
         logging.info("Paused...")
@@ -67,7 +66,7 @@ class Settings(commands.Cog):
             colour=0x00ff00,
             description="✅ Unpaused..."
         )
-        embed.set_author(name="Unpause", icon_url=self.bot.avatar_url)  # type: ignore
+        embed.set_author(name="Unpause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
         await ctx.send(embed=embed)
         self.bot.paused = False
         logging.info("Unpaused...")

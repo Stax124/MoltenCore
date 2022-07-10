@@ -30,7 +30,7 @@ class Events(commands.Cog):
                     colour=0xff0000,
                     description=f'❌ Command not found'
                 )
-                embed.set_author(name="Status", icon_url=bot.avatar_url)
+                embed.set_author(name="Status", icon_url=bot.user.avatar_url.__str__())
                 await ctx.send(embed=embed)
             elif isinstance(error, NotFound):
                 logging.warning("Error 404, passing")
@@ -41,7 +41,7 @@ class Events(commands.Cog):
                     colour=0xff0000,
                     description=f'❌ Missing required argument(s)'
                 )
-                embed.set_author(name="Status", icon_url=bot.avatar_url)
+                embed.set_author(name="Status", icon_url=bot.user.avatar_url.__str__())
                 await ctx.send(embed=embed)
                 pass
             else:
