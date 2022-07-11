@@ -56,7 +56,7 @@ class Paginator:
         remove_reactions: bool = True,
         timeout: int = 0,
         control_emojis: tuple = ("⏮️", "⏪", "🔐", "⏩", "⏭️"),
-    ):
+    ) -> None:
         self.ctx = ctx
         self.bot = ctx.bot
         self.current_page = 0
@@ -84,7 +84,7 @@ class Paginator:
 
         msg = await msg.channel.fetch_message(msg.id)
 
-        def check(reaction: discord.Reaction, user: discord.User):
+        def check(reaction: discord.Reaction, user: discord.User) -> bool:
             return (
                 user == self.ctx.author
                 and reaction.message.id == msg.id

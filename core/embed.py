@@ -73,7 +73,7 @@ class ModularEmbedList:
         self.data: list[str] = []
         self.limit = 4000
 
-    def add_data(self, data: str):
+    def add_data(self, data: str) -> None:
         self.data.append(data)
 
     def build(self) -> Paginator:

@@ -40,6 +40,10 @@ pytest = "^7.1.2"
     help= "Format the code"
     cmd = "black ."
 
+    [tool.poe.tasks.web]
+    help= "Run the web server"
+    cmd = "uvicorn web:app --reload"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

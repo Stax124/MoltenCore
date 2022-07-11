@@ -50,7 +50,7 @@ if not os.path.exists("plugins"):
     os.makedirs("plugins")
 
 
-def get_prefix(bot: "ModularBot", msg: discord.Message):
+def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
     if msg.channel.type == discord.ChannelType.private:
         logging.debug("Private message, using default prefix")
         return commands.when_mentioned_or("!")(bot, msg)  # type: ignore
@@ -67,7 +67,7 @@ def get_prefix(bot: "ModularBot", msg: discord.Message):
 
 
 class ModularBot(AutoShardedBot):
-    def __init__(self, enable_rce: bool = False, disable_plugins: bool = False):
+    def __init__(self, enable_rce: bool = False, disable_plugins: bool = False) -> None:
         super().__init__(
             command_prefix=get_prefix,  # type: ignore
             help_command=PrettyHelp(
@@ -109,14 +109,14 @@ class ModularBot(AutoShardedBot):
         # RCE
         self.enable_rce: bool = enable_rce
 
-    def run(self, token: str, *, bot: bool = True, reconnect: bool = True):
+    def run(self, token: str, *, bot: bool = True, reconnect: bool = True) -> None:
         super().run(token, bot=bot, reconnect=reconnect)
 
-    def restart_web(self):
+    def restart_web(self) -> None:
         self.web.kill()
         self.web = subprocess.Popen("python web.py", shell=True, cwd=os.getcwd())
 
-    def setup_config(self):
+    def setup_config(self) -> None:
         config = self.database.exec(select(Config)).first()
 
         if not config:
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 
     @bot.command(name="reload")
     @commands.is_owner()
-    async def command_reload_extension(ctx: Context, extension: str):
+    async def command_reload_extension(ctx: Context, extension: str) -> None:
         try:
             bot.reload_extension(extension)
             logging.info(f"{extension} reloaded")
@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
     @bot.command(name="load")
     @commands.is_owner()
-    async def command_load_extension(ctx: Context, extension: str):
+    async def command_load_extension(ctx: Context, extension: str) -> None:
         try:
             bot.load_extension(extension)
             logging.info(f"{extension} loaded")
@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
     @bot.command(name="unload")
     @commands.is_owner()
-    async def command_unload_extension(ctx: Context, extension: str):
+    async def command_unload_extension(ctx: Context, extension: str) -> None:
         try:
             bot.unload_extension(extension)
             logging.info(f"{extension} unloaded")
@@ -239,7 +239,7 @@ if __name__ == "__main__":
 
     @bot.command(name="reload-all")
     @commands.is_owner()
-    async def command_reload_all_extensions(ctx: Context):
+    async def command_reload_all_extensions(ctx: Context) -> None:
         all_extensions = [
             i.replace(".py", "") for i in os.listdir("extensions") if i.endswith(".py")
         ]

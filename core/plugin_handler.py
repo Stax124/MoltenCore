@@ -30,17 +30,17 @@ class PluginHandler:
         for data in self.plugin_data:
             self.bot.plugins.append(Plugin(data, self.bot))
 
-    def reload_all_plugins(self):
+    def reload_all_plugins(self) -> None:
         self.logger.debug("Reloading plugin data of all plugins")
 
         for plugin in self.bot.plugins:
             plugin.reload()
 
-    def load_all_plugins(self):
+    def load_all_plugins(self) -> None:
         for plugin in self.bot.plugins:
             plugin.load()
 
-    def unload_all_plugins(self):
+    def unload_all_plugins(self) -> None:
         for plugin in self.bot.plugins:
             plugin.unload()
 
@@ -57,7 +57,7 @@ class PluginHandler:
 
         return req
 
-    def install_requirements(self):
+    def install_requirements(self) -> None:
         "Installs all requirements that plugins require"
 
         try:

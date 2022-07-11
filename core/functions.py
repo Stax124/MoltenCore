@@ -15,7 +15,7 @@ async def confirm(
     message: str,
     timeout: int = 20,
     author: str = "Confirm",
-):
+) -> bool:
     try:
         embed = discord.Embed(
             colour=discord.Colour.from_rgb(255, 255, 0), description=message
@@ -26,7 +26,7 @@ async def confirm(
         await msg.add_reaction("✅")
         await msg.add_reaction("❌")
 
-        def check(reaction, user):
+        def check(reaction: discord.Reaction, user: discord.User) -> bool:
             return user == ctx.message.author and str(reaction.emoji) in ["✅", "❌"]
 
         reaction, _ = await bot.wait_for("reaction_add", timeout=timeout, check=check)
@@ -36,10 +36,12 @@ async def confirm(
         elif reaction.emoji == "✅":
             await msg.delete()
             return True
+        else:
+            return False
     except asyncio.TimeoutError:
         await msg.delete()
         return False
 
 
-def is_in_virtualenv():
+def is_in_virtualenv() -> bool:
     return sys.prefix != sys.base_prefix
