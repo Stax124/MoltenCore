@@ -13,3 +13,11 @@ plugins/
 **/__pycache__
 poetry.lock
 test.py
+
+# Temp
+assets/
+favicon.ico
+index.html
+
+# Linters
+.mypy_cache
