@@ -39,6 +39,7 @@ loglevels = {
     "CRITICAL:": logging.CRITICAL,
 }
 
+
 # Searching for all primary modules
 default_extensions = [
     "extensions." + i.replace(".py", "")
@@ -155,6 +156,11 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    discord_gateway_logger = logging.getLogger("discord.gateway")
+    discord_gateway_logger.setLevel(logging.INFO)
+    discord_client_logger = logging.getLogger("discord.client")
+    discord_client_logger.setLevel(logging.INFO)
+
     if args.file:
         logging.basicConfig(
             level=loglevels[args.logging],
@@ -168,7 +174,11 @@ if __name__ == "__main__":
         level=loglevels[args.logging],
         fmt="%(levelname)s | %(asctime)s | %(name)s |->| %(message)s",
         datefmt=r"%H:%M:%S",
+        reconfigure=False,
     )
+
+    logger = logging.getLogger()
+    logger.name = "bot"
 
     # Quit if not in virtualenv
     if not is_in_virtualenv():

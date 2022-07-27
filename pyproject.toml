@@ -21,6 +21,7 @@ fastapi = "^0.78.0"
 uvicorn = "^0.18.2"
 poethepoet = {extras = ["poetry_plugin"], version = "^0.15.0"}
 black = "^22.6.0"
+jsonschema = "^4.7.2"
 
 [tool.poetry.dev-dependencies]
 "discord.py-stubs" = "^1.7.3"
@@ -43,6 +44,10 @@ pytest = "^7.1.2"
     [tool.poe.tasks.web]
     help= "Run the web server"
     cmd = "uvicorn web:app --reload"
+
+    [tool.poe.tasks.export]
+    help= "Export the requirements"
+    cmd = "poetry export -f requirements.txt --without-hashes"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
