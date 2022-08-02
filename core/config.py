@@ -12,12 +12,12 @@ from .exceptions import ValidatorNotFound
 class Config:
     def __init__(
         self,
-        config_path: str = "./config",
+        config_name: str = "./test_plugin",
         validation_scheme_path: Optional[str] = None,
     ) -> None:
         logging.debug("Initializing config")
 
-        self.path: str = config_path
+        self.path: str = os.path.join("config", config_name)
         self.config_file: TextIOWrapper = self.create_config()
         self.config: dict = {}
 
@@ -34,13 +34,13 @@ class Config:
             logging.debug("Config folder does not exist, creating")
             os.makedirs(self.path)
 
-        if not os.path.exists(os.path.join(self.path, "/config.json")):
+        if not os.path.exists(os.path.join(self.path, "config.json")):
             logging.debug("Config file does not exist, creating")
-            with open(os.path.join(self.path, "/config.json"), "w") as f:
+            with open(os.path.join(self.path, "config.json"), "w") as f:
                 return f
         else:
             logging.debug("Config file exists, loading")
-            with open(os.path.join(self.path, "/config.json"), "r") as f:
+            with open(os.path.join(self.path, "config.json"), "r") as f:
                 return f
 
     def close_config(self) -> None:

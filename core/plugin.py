@@ -1,15 +1,12 @@
 import logging
 import os
+import traceback
 from typing import TYPE_CHECKING
 
 import requests
 import termcolor
-from discord.ext.commands.errors import (
-    ExtensionFailed,
-    ExtensionNotFound,
-    ExtensionNotLoaded,
-    NoEntryPointError,
-)
+from discord.ext.commands.errors import (ExtensionFailed, ExtensionNotFound,
+                                         ExtensionNotLoaded, NoEntryPointError)
 from models.plugins import PluginData, PluginFiles
 from sqlmodel import select
 
@@ -30,6 +27,8 @@ class Plugin:
         self.folder_name: str = plugin_data.folder_name
         self.enabled: bool = plugin_data.enabled
         self.id: int = plugin_data.id
+
+        self.traceback: str = ""
 
         # Logger
         self.logger = logging.getLogger("plugin." + self.name)
@@ -124,6 +123,7 @@ class Plugin:
                     self.logger.error(
                         f"{type(e).__name__}: Could not load {pythonpath}"
                     )
+                    self.traceback = traceback.format_exc(2000)
                     return False
 
             self.logger.info(termcolor.colored(f"Loaded plugin {self.name}", "green"))
@@ -151,6 +151,7 @@ class Plugin:
             self.logger.error(
                 f"{type(e).__name__}: Could not unload plugin {self.name}"
             )
+            self.traceback = traceback.format_exc(2000)
             return False
 
     def reload(self) -> bool:
@@ -176,15 +177,20 @@ class Plugin:
             self.logger.error(
                 f"{type(e).__name__}: Could not reload plugin {self.name}"
             )
+            self.traceback = traceback.format_exc(2000)
             return False
 
     def enable(self) -> None:
+        "Marks this plugin as enabled, it will take a reload to apply changes"
+
         self.enabled = True
         self.bot.database.query(PluginData).filter_by(id=self.id).update(
             {PluginData.enabled: True}
         )
 
     def disable(self) -> None:
+        "Marks this plugin as disabled, it will take a reload to apply changes"
+
         self.enabled = False
         self.bot.database.query(PluginData).filter_by(id=self.id).update(
             {PluginData.enabled: False}

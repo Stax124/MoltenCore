@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 import discord
 from discord.colour import Colour
@@ -19,6 +19,16 @@ class NoDataProvided(Exception):
 
 
 class ModularEmbed(discord.Embed):
+    """Extended discord.Embed class that automatically respects the main color of the bot
+
+    Args:
+        bot (ModularBot): The bot instance
+        color (Union[int, Colour, _EmptyEmbed]): The color of the embed
+        colour (Union[int, Colour, _EmptyEmbed]): The color of the embed (alternative name)
+        title (Union[object, _EmptyEmbed]): The title of the embed
+        type (str): The type of the embed
+    """
+
     def __init__(
         self,
         bot: "ModularBot",
@@ -29,11 +39,14 @@ class ModularEmbed(discord.Embed):
         type: str = "",
         url: Union[object, _EmptyEmbed] = "",
         description: Union[object, _EmptyEmbed] = _EmptyEmbed(),
-        timestamp: Union[datetime.datetime, _EmptyEmbed] = _EmptyEmbed()
+        timestamp: Union[Literal[True], datetime.datetime, _EmptyEmbed] = _EmptyEmbed()
     ) -> None:
         config = bot.database.exec(select(Config)).first()
         if config:
             color = config.main_color
+
+        if timestamp == True:
+            timestamp = datetime.datetime.now()
 
         super().__init__(
             color=color,
@@ -64,24 +77,47 @@ class ModularEmbedList:
     """
 
     def __init__(
-        self, bot: "ModularBot", ctx: Context, title: Union[str, _EmptyEmbed]
+        self,
+        bot: "ModularBot",
+        ctx: Context,
+        title: Union[str, _EmptyEmbed],
+        raw: bool = False,
     ) -> None:
         self.ctx = ctx
         self.bot = bot
         self.title = title
 
         self.data: list[str] = []
-        self.limit = 4000
+        self.limit = 1990 if raw else 2000
+        self.raw = raw
 
     def add_data(self, data: str) -> None:
+        """Append data to the embed
+
+        Example:
+            >>> embed = ModularEmbedList(bot, ctx, title="Title")
+            >>> embed.add_data("Hello World")
+        """
+
         self.data.append(data)
 
     def build(self) -> Paginator:
+        """Build the paginator from the data that was provided
+
+        Example:
+            >>> embed = ModularEmbedList(bot, ctx, title="Title")
+            >>> embed.add_data("Hello World")
+            >>> paginator = embed.build()
+        """
+
         if not self.data:
             raise NoDataProvided("No data to build")
 
         embeds: list[discord.Embed] = []
         page: str = ""
+
+        if self.raw:
+            page += "```"
 
         for data in self.data:
             if len(data) > self.limit:
@@ -100,14 +136,19 @@ class ModularEmbedList:
 
             for item in data:
                 if len(page) + len(item) > self.limit:
+                    if self.raw:
+                        page += "```"
+
                     embeds.append(
                         ModularEmbed(self.bot, title=self.title, description=page)
                     )
-                    page = ""
+                    page = "```" if self.raw else ""
                 else:
                     page += item
 
             # Add the last page
+            if self.raw:
+                page += "```"
             embeds.append(ModularEmbed(self.bot, title=self.title, description=page))
 
         return Paginator(ctx=self.ctx, embeds=embeds)

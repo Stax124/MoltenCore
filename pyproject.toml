@@ -35,7 +35,7 @@ pytest = "^7.1.2"
 
     [tool.poe.tasks.start]
     help= "Run the application"
-    cmd = "python main.py --enable-rce"
+    cmd = "python main.py -l DEBUG --enable-rce"
 
     [tool.poe.tasks.format]
     help= "Format the code"

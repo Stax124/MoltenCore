@@ -19,7 +19,6 @@ class PluginHandler:
     def __init__(self, bot: "ModularBot") -> None:
         self.logger = logging.getLogger("plugin-handler")
         self.bot = bot
-        self.plugin_data = self._find_plugin_data()
 
     def _find_plugin_data(self) -> list[PluginData]:
         return self.bot.database.exec(select(PluginData)).all()
@@ -27,21 +26,25 @@ class PluginHandler:
     def populate_plugins(self) -> None:
         self.logger.debug("Populating plugin list")
 
-        for data in self.plugin_data:
-            self.bot.plugins.append(Plugin(data, self.bot))
+        for data in self._find_plugin_data():
+            plugin = Plugin(data, self.bot)
+            self.bot.plugins[plugin.name] = plugin
 
     def reload_all_plugins(self) -> None:
         self.logger.debug("Reloading plugin data of all plugins")
 
-        for plugin in self.bot.plugins:
+        for plugin_name in self.bot.plugins:
+            plugin = self.bot.plugins[plugin_name]
             plugin.reload()
 
     def load_all_plugins(self) -> None:
-        for plugin in self.bot.plugins:
+        for plugin_name in self.bot.plugins:
+            plugin = self.bot.plugins[plugin_name]
             plugin.load()
 
     def unload_all_plugins(self) -> None:
-        for plugin in self.bot.plugins:
+        for plugin_name in self.bot.plugins:
+            plugin = self.bot.plugins[plugin_name]
             plugin.unload()
 
     @property
@@ -49,7 +52,8 @@ class PluginHandler:
         # Get all requirements for pip packages from all plugins
 
         req: list[str] = []
-        for plugin in self.bot.plugins:
+        for plugin_name in self.bot.plugins:
+            plugin = self.bot.plugins[plugin_name]
             recieved = plugin.get_requirements()
             for requirement in recieved:
                 if not requirement in req:

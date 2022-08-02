@@ -5,7 +5,8 @@ import sys
 from typing import TYPE_CHECKING
 
 import discord
-import models
+import models  # For eval
+from core.embed import ModularEmbedList
 from core.functions import confirm
 from discord.enums import Status
 from discord.ext import commands
@@ -45,7 +46,10 @@ class Owner(commands.Cog):
     async def eval(self, ctx: Context, *, message: str):
         if self.bot.enable_rce:
             try:
-                await ctx.send(eval(message))
+                embed = ModularEmbedList(self.bot, ctx, title="Eval", raw=True)
+                embed.add_data(eval(message))
+                await embed.build().run()
+                # await ctx.send(str(eval(message))[:2000])
             except Exception as e:
                 await ctx.send(e)
         else:

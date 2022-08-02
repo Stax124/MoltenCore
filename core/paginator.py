@@ -1,6 +1,6 @@
 """
 MODIFIED FILE - original author toxicrecker
-MODIFIED BY - Stax124
+MODIFIED BY - Stax124 (2022)
 
 LICENSE:
 	MIT License
@@ -26,6 +26,7 @@ LICENSE:
 """
 
 import asyncio
+import logging
 
 import discord
 from discord.ext.commands import Context
@@ -35,17 +36,17 @@ class Paginator:
     """Utility for fast pagination of discord embeds
 
     Attributes:
-            `ctx`: The context of the command
-            `embeds`: A list of `discord.Embed` objects
-            `auto_footer`: Whether to add a footer with page number to the embeds
-            `remove_reactions`: Whether to remove reaction when clicking on the control emojis
-            `timeout`: The amount of time to wait for a reaction before closing the paginator
-            `control_emojis`: The emojis to use for the control emojis
+        ctx (Context): The context of the command
+        embeds (Embed | ModularEmbed): A list of `discord.Embed` objects
+        auto_footer (bool): Whether to add a footer with page number to the embeds
+        remove_reactions (bool): Whether to remove reaction when clicking on the control emojis
+        timeout (int): The amount of time to wait for a reaction before closing the paginator
+        control_emojis (tuple): The emojis to use for the control emojis
 
     Example:
-            >>> embeds = [discord.Embed(title="Page 1"), discord.Embed(title="Page 2")]
-            >>> paginator = Paginator(ctx, embeds, auto_footer=False)
-            >>> await paginator.run()
+        >>> embeds = [discord.Embed(title="Page 1"), discord.Embed(title="Page 2")]
+        >>> paginator = Paginator(ctx, embeds, auto_footer=False)
+        >>> await paginator.run()
     """
 
     def __init__(
@@ -67,7 +68,13 @@ class Paginator:
         self.embeds = embeds
 
     async def run(self) -> None:
-        """Run the paginator, exit after timeout"""
+        """Run the paginator, exit after timeout
+
+        Example:
+            >>> embeds = [discord.Embed(title="Page 1"), discord.Embed(title="Page 2")]
+            >>> paginator = Paginator(ctx, embeds, auto_footer=False)
+            >>> await paginator.run()
+        """
 
         if self.auto_footer:
             self.embeds[0].set_footer(
@@ -115,11 +122,9 @@ class Paginator:
 
             if str(reaction.emoji) == self.control_emojis[0]:
                 self.current_page = 0
-                if self.remove_reactions:
-                    try:
-                        await msg.remove_reaction(str(reaction.emoji), user)
-                    except:
-                        pass
+
+                await self._remove_reaction(msg, reaction, user)
+
                 if self.auto_footer:
                     self.embeds[0].set_footer(
                         text=f"({self.current_page+1}/{len(self.embeds)})"
@@ -129,11 +134,9 @@ class Paginator:
             elif str(reaction.emoji) == self.control_emojis[1]:
                 self.current_page = self.current_page - 1
                 self.current_page = 0 if self.current_page < 0 else self.current_page
-                if self.remove_reactions:
-                    try:
-                        await msg.remove_reaction(str(reaction.emoji), user)
-                    except:
-                        pass
+
+                await self._remove_reaction(msg, reaction, user)
+
                 if self.auto_footer:
                     self.embeds[self.current_page].set_footer(
                         text=f"({self.current_page+1}/{len(self.embeds)})"
@@ -159,11 +162,9 @@ class Paginator:
                     if self.current_page > len(self.embeds) - 1
                     else self.current_page
                 )
-                if self.remove_reactions:
-                    try:
-                        await msg.remove_reaction(str(reaction.emoji), user)
-                    except:
-                        pass
+
+                await self._remove_reaction(msg, reaction, user)
+
                 if self.auto_footer:
                     self.embeds[self.current_page].set_footer(
                         text=f"({self.current_page+1}/{len(self.embeds)})"
@@ -172,13 +173,22 @@ class Paginator:
 
             elif str(reaction.emoji) == self.control_emojis[4]:
                 self.current_page = len(self.embeds) - 1
-                if self.remove_reactions:
-                    try:
-                        await msg.remove_reaction(str(reaction.emoji), user)
-                    except:
-                        pass
+
+                await self._remove_reaction(msg, reaction, user)
+
                 if self.auto_footer:
                     self.embeds[len(self.embeds) - 1].set_footer(
                         text=f"({self.current_page+1}/{len(self.embeds)})"
                     )
                 await msg.edit(embed=self.embeds[len(self.embeds) - 1])
+
+    async def _remove_reaction(
+        self, msg: discord.Message, reaction: discord.Reaction, user: discord.User
+    ):
+        if self.remove_reactions:
+            try:
+                await msg.remove_reaction(str(reaction.emoji), user)
+            except discord.errors.Forbidden:
+                pass
+            except Exception as e:
+                logging.warning(f"{type(e).__name__: {e}}")

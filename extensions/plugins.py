@@ -27,7 +27,8 @@ class Plugins(commands.Cog):
             await ctx.send(embed=embed)
         else:
             modular_embed = ModularEmbedList(self.bot, ctx, title="Plugins")
-            for plugin in self.bot.plugins:
+            for plugin_name in self.bot.plugins:
+                plugin = self.bot.plugins[plugin_name]
                 modular_embed.add_data(
                     f"{'🟩' if plugin.enabled else '🟥'} {plugin.name}"
                 )
