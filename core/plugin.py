@@ -15,7 +15,7 @@ from models.plugins import PluginData, PluginFiles
 from sqlmodel import select
 
 if TYPE_CHECKING:
-    from main import ModularBot
+    from core.bot import ModularBot
 
 
 class Plugin:

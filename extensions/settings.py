@@ -2,14 +2,15 @@ import logging
 from typing import Union
 
 import discord
-from core.functions import confirm
 from discord.activity import Activity
 from discord.enums import ActivityType, Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
-from main import ModularBot
 from models.config import Config
 from models.guild import Guild
+
+from core.bot import ModularBot
+from core.confirm import confirm
 
 
 class Settings(commands.Cog):

@@ -1,3 +1,4 @@
+from asyncio.log import logger
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from sqlmodel.sql.expression import Select, SelectOfScalar
@@ -21,4 +22,5 @@ app.mount("/", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 @app.get("/")
 async def index():
+    logger.info("index")
     return FileResponse("frontend/dist/index.html")

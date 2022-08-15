@@ -2,19 +2,17 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import TYPE_CHECKING
 
 import discord
 import models  # For eval
-from core.embed import ModularEmbedList
-from core.functions import confirm
 from discord.enums import Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
 from sqlmodel import select  # For eval
 
-if TYPE_CHECKING:
-    from main import ModularBot
+from core.bot import ModularBot
+from core.confirm import confirm
+from core.embed import ModularEmbedList
 
 
 class Owner(commands.Cog):

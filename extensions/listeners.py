@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import discord
 from discord.activity import Activity
@@ -9,8 +8,7 @@ from discord.enums import ActivityType
 from discord.ext import commands
 from models.guild import Guild
 
-if TYPE_CHECKING:
-    from main import ModularBot
+from core.bot import ModularBot
 
 
 class Listeners(commands.Cog):

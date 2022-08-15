@@ -11,7 +11,7 @@ from sqlmodel import select
 from core.paginator import Paginator
 
 if TYPE_CHECKING:
-    from main import ModularBot
+    from core.bot import ModularBot
 
 
 class NoDataProvided(Exception):

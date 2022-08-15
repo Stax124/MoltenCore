@@ -10,7 +10,7 @@ from sqlmodel import select
 from core.plugin import Plugin
 
 if TYPE_CHECKING:
-    from main import ModularBot
+    from core.bot import ModularBot
 
 
 class PluginHandler:

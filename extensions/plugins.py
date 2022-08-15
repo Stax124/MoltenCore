@@ -1,12 +1,8 @@
-from typing import TYPE_CHECKING
-
-from core.embed import ModularEmbed, ModularEmbedList
-from core.paginator import Paginator
 from discord.ext import commands
 from discord.ext.commands.context import Context
 
-if TYPE_CHECKING:
-    from main import ModularBot
+from core.bot import ModularBot
+from core.embed import ModularEmbed, ModularEmbedList
 
 
 class Plugins(commands.Cog):

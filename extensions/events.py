@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import discord
 from discord.errors import NotFound
 from discord.ext import commands
 from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
 
-if TYPE_CHECKING:
-    from main import ModularBot
+from core.bot import ModularBot
 
 
 class Events(commands.Cog):
