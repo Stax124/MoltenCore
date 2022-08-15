@@ -16,14 +16,9 @@ Select.inherit_cache = True  # type: ignore
 
 app.include_router(config.router)
 app.include_router(guild.router)
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+app.mount("/", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 
 @app.get("/")
 async def index():
-    return FileResponse("index.html")
-
-
-@app.get("/favicon.ico")
-async def favicon():
-    return FileResponse("favicon.ico")
+    return FileResponse("frontend/dist/index.html")

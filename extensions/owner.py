@@ -47,7 +47,7 @@ class Owner(commands.Cog):
         if self.bot.enable_rce:
             try:
                 embed = ModularEmbedList(self.bot, ctx, title="Eval", raw=True)
-                embed.add_data(eval(message))
+                embed.add_data(str(eval(message)))
                 await embed.build().run()
                 # await ctx.send(str(eval(message))[:2000])
             except Exception as e:

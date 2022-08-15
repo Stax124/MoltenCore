@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 
 import discord
 from core.functions import confirm
@@ -7,6 +8,7 @@ from discord.enums import ActivityType, Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
 from main import ModularBot
+from models.config import Config
 from models.guild import Guild
 
 
@@ -40,7 +42,7 @@ class Settings(commands.Cog):
                     )
                     self.bot.database.commit()
 
-    @commands.command(name="pause", help="Show the bot, whos da boss: shutdown", pass_context=True)  # type: ignore
+    @commands.command(name="pause", help="Show the bot, whos da boss: shutdown")
     @commands.is_owner()
     async def pause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Pause process ?")
@@ -48,16 +50,28 @@ class Settings(commands.Cog):
             return
 
         embed = discord.Embed(colour=0x00FF00, description="✅ Paused...")
-        embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
+        embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
         await ctx.send(embed=embed)
-        self.bot.paused = True
-        logging.info("Paused...")
 
-        await self.bot.change_presence(
-            activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb
-        )
+        config: Union[Config, None] = self.bot.database.query(Config).first()
 
-    @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown", pass_context=True)  # type: ignore
+        if config:
+            config.paused = True
+            self.bot.database.commit()
+
+            logging.info("Paused...")
+
+            await self.bot.change_presence(
+                activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb
+            )
+        else:
+            embed = discord.Embed(
+                colour=0xFF0000, description="❌ Error... Config not found in database"
+            )
+            embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
+            await ctx.send(embed=embed)
+
+    @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown")
     @commands.is_owner()
     async def unpause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Unpause process ?")
@@ -65,16 +79,26 @@ class Settings(commands.Cog):
             return
 
         embed = discord.Embed(colour=0x00FF00, description="✅ Unpaused...")
-        embed.set_author(name="Unpause", icon_url=self.bot.user.avatar_url.__str__())  # type: ignore
+        embed.set_author(name="Unpause", icon_url=self.bot.user.avatar_url.__str__())
         await ctx.send(embed=embed)
-        self.bot.paused = False
-        logging.info("Unpaused...")
 
-        await self.bot.change_presence(
-            activity=Activity(
-                name=f"{len(self.bot.guilds)} servers", type=ActivityType.watching
+        config: Union[Config, None] = self.bot.database.query(Config).first()
+
+        if config:
+            config.paused = False
+            self.bot.database.commit()
+
+            logging.info("Unpaused...")
+
+            await self.bot.change_presence(
+                activity=Activity(name=f"commands", type=ActivityType.listening)
             )
-        )
+        else:
+            embed = discord.Embed(
+                colour=0xFF0000, description="❌ Error... Config not found in database"
+            )
+            embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

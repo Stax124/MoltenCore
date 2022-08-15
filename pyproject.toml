@@ -22,6 +22,7 @@ uvicorn = "^0.18.2"
 poethepoet = {extras = ["poetry_plugin"], version = "^0.15.0"}
 black = "^22.6.0"
 jsonschema = "^4.7.2"
+watchdog = "^2.1.9"
 
 [tool.poetry.dev-dependencies]
 "discord.py-stubs" = "^1.7.3"
@@ -48,6 +49,14 @@ pytest = "^7.1.2"
     [tool.poe.tasks.export]
     help= "Export the requirements"
     cmd = "poetry export -f requirements.txt --without-hashes"
+
+    [tool.poe.tasks.revision]
+    help= "Generate new alembic revision"
+    cmd = "alembic revision --autogenerate"
+
+    [tool.poe.tasks.migrate]
+    help= "Migrate the database"
+    cmd = "alembic upgrade head"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

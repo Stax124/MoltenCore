@@ -5,8 +5,12 @@ from typing import TYPE_CHECKING
 
 import requests
 import termcolor
-from discord.ext.commands.errors import (ExtensionFailed, ExtensionNotFound,
-                                         ExtensionNotLoaded, NoEntryPointError)
+from discord.ext.commands.errors import (
+    ExtensionFailed,
+    ExtensionNotFound,
+    ExtensionNotLoaded,
+    NoEntryPointError,
+)
 from models.plugins import PluginData, PluginFiles
 from sqlmodel import select
 

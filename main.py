@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import os
 import subprocess
@@ -16,6 +17,7 @@ from discord.ext.commands.errors import (
 from pretty_help import PrettyHelp
 from sqlmodel import Session, select
 from sqlmodel.sql.expression import Select, SelectOfScalar
+from uvicorn import run as uvicorn_run
 
 from api_commands import *
 from api_commands.commands import commands as imported_commands
@@ -47,8 +49,14 @@ default_extensions = [
     if i.endswith(".py")
 ]
 
-if not os.path.exists("plugins"):
-    os.makedirs("plugins")
+
+def generate_necessarry_files():
+    if not os.path.exists("plugins"):
+        os.makedirs("plugins")
+    if not os.path.exists("config/tasks.json"):
+        os.makedirs("config", exist_ok=True)
+        with open("config/tasks.json", "w") as f:
+            json.dump({}, f)
 
 
 def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
@@ -78,7 +86,6 @@ class ModularBot(AutoShardedBot):
         )
 
         # State of the bot
-        self.paused: bool = False
         self.__version__: str = "0.0.1alpha"
 
         # Database stuff
@@ -96,7 +103,7 @@ class ModularBot(AutoShardedBot):
             logging.warning("Plugins are disabled")
 
         # Web
-        self.web = subprocess.Popen("uvicorn web:app", shell=True)
+        uvicorn_run("web.py", reload=True)
 
         # Custom commands from web
         self.custom_commands = imported_commands
@@ -156,6 +163,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # Generate all necessary files and directories
+    generate_necessarry_files()
+
+    # Disable DEBUG logging of discord module
     discord_gateway_logger = logging.getLogger("discord.gateway")
     discord_gateway_logger.setLevel(logging.INFO)
     discord_client_logger = logging.getLogger("discord.client")
@@ -163,6 +174,7 @@ if __name__ == "__main__":
     discord_http_logger = logging.getLogger("discord.http")
     discord_http_logger.setLevel(logging.INFO)
 
+    # Log into file if specified
     if args.file:
         logging.basicConfig(
             level=loglevels[args.logging],
@@ -185,7 +197,7 @@ if __name__ == "__main__":
     # Quit if not in virtualenv
     if not is_in_virtualenv():
         logging.error(
-            "For security reasons, this bot should only be used in a virtualenv, please create one and run this script again"
+            "For security and portability reasons, this bot should only be used in a virtualenv, please create one and run this script again"
         )
         exit(1)
 
