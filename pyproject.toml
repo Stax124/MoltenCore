@@ -21,7 +21,6 @@ fastapi = "^0.78.0"
 uvicorn = "^0.18.2"
 poethepoet = {extras = ["poetry_plugin"], version = "^0.15.0"}
 black = "^22.6.0"
-jsonschema = "^4.7.2"
 watchdog = "^2.1.9"
 
 [tool.poetry.dev-dependencies]

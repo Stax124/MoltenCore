@@ -13,14 +13,8 @@ services:
       interval: 10s
       timeout: 2s
       retries: 10
-  bot:
-    image: stax124/modular-bot:alpine
-    depends_on:
-      database:
-        condition: service_healthy
     ports:
-      - "8080:8080"
-    restart: always
+      - "5432:5432"
 
 volumes:
   db_data: {}

@@ -1,0 +1,12 @@
+# Python
+__pycache__
+.mypy_cache
+
+# Other
+.github
+.git
+.gitignore
+.vscode
+
+# Exclude frontend, will be imported with DOCKERFILE
+frontend/
