@@ -2,7 +2,7 @@ name: black-action
 on: [push, pull_request]
 jobs:
   black-linter:
-    name: runner / black formatter
+    name: black formatter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
