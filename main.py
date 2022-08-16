@@ -1,16 +1,20 @@
 import argparse
 import logging
 import os
+import core.shared as shared
 from threading import Thread
 
 from coloredlogs import install as install_coloredlogs
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from sqlmodel.sql.expression import Select, SelectOfScalar
+from starlette.responses import FileResponse
 from uvicorn import run as uvicorn_run
 
 from core.bot import ModularBot
 from core.const import loglevels
 from core.functions import generate_necessarry_files, is_in_virtualenv
-from web import app
+from routes import config, guild
 
 # Fix sqlalchemy caching with sqlmodel
 SelectOfScalar.inherit_cache = True  # type: ignore
@@ -93,8 +97,23 @@ if __name__ == "__main__":
     # Init bot and add necessary commands
     bot = ModularBot(enable_rce=args.enable_rce, disable_plugins=args.disable_plugins)
 
+    shared.bot = bot
+
+    # Web
+    app = FastAPI()
+    app.include_router(config.router)
+    app.include_router(guild.router)
+    app.mount("/assets", StaticFiles(directory="./frontend/dist/assets"), name="assets")
+
+    @app.get("/")
+    async def index():
+        logger.info("index")
+        return FileResponse("./frontend/dist/index.html")
+
+    # Start web server in separate thread
     web_thread = Thread(target=run_web, args=[args.host, args.port])
     web_thread.daemon = True
-
     web_thread.start()
+
+    # Start bot
     bot.run(args.token, reconnect=True)
