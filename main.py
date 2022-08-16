@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-import core.shared as shared
 from threading import Thread
 
 from coloredlogs import install as install_coloredlogs
@@ -11,6 +10,7 @@ from sqlmodel.sql.expression import Select, SelectOfScalar
 from starlette.responses import FileResponse
 from uvicorn import run as uvicorn_run
 
+import core.shared as shared
 from core.bot import ModularBot
 from core.const import loglevels
 from core.functions import generate_necessarry_files, is_in_virtualenv
