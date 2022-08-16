@@ -22,7 +22,3 @@ def get_extensions() -> list[str]:
 def generate_necessarry_files():
     if not os.path.exists("plugins"):
         os.makedirs("plugins")
-    if not os.path.exists("config/tasks.json"):
-        os.makedirs("config", exist_ok=True)
-        with open("config/tasks.json", "w") as f:
-            json.dump({}, f)
