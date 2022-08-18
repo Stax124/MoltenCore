@@ -25,7 +25,7 @@ class Events(commands.Cog):
                 embed = discord.Embed(
                     colour=0xFF0000, description=f"❌ Command not found"
                 )
-                embed.set_author(name="Status", icon_url=bot.user.avatar_url.__str__())
+                embed.set_author(name="Status", icon_url=bot.avatar_url)
                 await ctx.send(embed=embed)
             elif isinstance(error, NotFound):
                 logging.warning("Error 404, passing")
@@ -35,7 +35,7 @@ class Events(commands.Cog):
                 embed = discord.Embed(
                     colour=0xFF0000, description=f"❌ Missing required argument(s)"
                 )
-                embed.set_author(name="Status", icon_url=bot.user.avatar_url.__str__())
+                embed.set_author(name="Status", icon_url=bot.avatar_url)
                 await ctx.send(embed=embed)
                 pass
             else:
@@ -43,5 +43,5 @@ class Events(commands.Cog):
                 raise error
 
 
-def setup(bot: "ModularBot"):
-    bot.add_cog(Events(bot))
+async def setup(bot: "ModularBot"):
+    await bot.add_cog(Events(bot))

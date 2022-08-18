@@ -30,7 +30,7 @@ class Owner(commands.Cog):
 
         logging.warning("Shutting down bot")
         embed = discord.Embed(colour=0x00FF00, description="✅ Shutting down...")
-        embed.set_author(name="Shutdown", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Shutdown", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
         logging.info("Shutting down...")
 
@@ -49,7 +49,7 @@ class Owner(commands.Cog):
                 await embed.build().run()
                 # await ctx.send(str(eval(message))[:2000])
             except Exception as e:
-                await ctx.send(e)
+                await ctx.send(e.__str__())
         else:
             await ctx.send("RCE disabled by default")
 
@@ -60,10 +60,10 @@ class Owner(commands.Cog):
             try:
                 await ctx.send(exec(message))
             except Exception as e:
-                await ctx.send(e)
+                await ctx.send(e.__str__())
         else:
             await ctx.send("RCE disabled by default")
 
 
-def setup(bot: "ModularBot"):
-    bot.add_cog(Owner(bot))
+async def setup(bot: "ModularBot"):
+    await bot.add_cog(Owner(bot))

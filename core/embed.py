@@ -1,9 +1,8 @@
 import datetime
-from typing import TYPE_CHECKING, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 import discord
 from discord.colour import Colour
-from discord.embeds import _EmptyEmbed
 from discord.ext.commands import Context
 from models.config import Config
 from sqlmodel import select
@@ -33,13 +32,13 @@ class ModularEmbed(discord.Embed):
         self,
         bot: "ModularBot",
         *,
-        color: Union[int, Colour, _EmptyEmbed] = _EmptyEmbed(),
-        colour: Union[int, Colour, _EmptyEmbed] = _EmptyEmbed(),
-        title: Union[object, _EmptyEmbed] = _EmptyEmbed(),
-        type: str = "",
-        url: Union[object, _EmptyEmbed] = "",
-        description: Union[object, _EmptyEmbed] = _EmptyEmbed(),
-        timestamp: Union[Literal[True], datetime.datetime, _EmptyEmbed] = _EmptyEmbed()
+        color: Union[int, Colour, None] = None,
+        colour: Union[int, Colour, None] = None,
+        title: Optional[Any] = None,
+        type: Literal["rich", "image", "video", "gifv", "article", "link"] = "rich",
+        url: Optional[Any] = None,
+        description: Optional[Any] = None,
+        timestamp: Union[Literal[True], datetime.datetime, None] = None,
     ) -> None:
         config = bot.database.exec(select(Config)).first()
         if config:
@@ -80,7 +79,7 @@ class ModularEmbedList:
         self,
         bot: "ModularBot",
         ctx: Context,
-        title: Union[str, _EmptyEmbed],
+        title: Optional[Any] = None,
         raw: bool = False,
     ) -> None:
         self.ctx = ctx

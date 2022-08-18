@@ -78,5 +78,5 @@ class Listeners(commands.Cog):
         )
 
 
-def setup(bot):
-    bot.add_cog(Listeners(bot))
+async def setup(bot: ModularBot):
+    await bot.add_cog(Listeners(bot))

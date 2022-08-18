@@ -106,7 +106,7 @@ class Plugin:
                 termcolor.colored(f"Could not download {self.name}: {e}", "red")
             )
 
-    def load(self) -> bool:
+    async def load(self) -> bool:
         "Loads the plugin files"
 
         if self.enabled:
@@ -116,7 +116,7 @@ class Plugin:
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Loading file {pythonpath}")
                 try:
-                    self.bot.load_extension(pythonpath)
+                    await self.bot.load_extension(pythonpath)
                 except (
                     ExtensionFailed,
                     ExtensionNotFound,
@@ -137,7 +137,7 @@ class Plugin:
             self.logger.info(f"Plugin {self.name} is disabled, not loading")
             return False
 
-    def unload(self) -> bool:
+    async def unload(self) -> bool:
         "Unloads the plugin files"
 
         try:
@@ -146,7 +146,7 @@ class Plugin:
 
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Unloading file {pythonpath}")
-                self.bot.unload_extension(pythonpath)
+                await self.bot.unload_extension(pythonpath)
 
             return True
 
@@ -158,7 +158,7 @@ class Plugin:
             self.traceback = traceback.format_exc(2000)
             return False
 
-    def reload(self) -> bool:
+    async def reload(self) -> bool:
         "Reloads the plugin files"
 
         try:
@@ -167,7 +167,7 @@ class Plugin:
 
             for pythonpath in [self.generate_safe_path(i) for i in self.local_files]:
                 self.logger.debug(f"Reloading file {pythonpath}")
-                self.bot.reload_extension(pythonpath)
+                await self.bot.reload_extension(pythonpath)
 
             return True
 

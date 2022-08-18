@@ -30,22 +30,25 @@ class PluginHandler:
             plugin = Plugin(data, self.bot)
             self.bot.plugins[plugin.name] = plugin
 
-    def reload_all_plugins(self) -> None:
+    async def reload_all_plugins(self) -> None:
         self.logger.debug("Reloading plugin data of all plugins")
 
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
-            plugin.reload()
+            await plugin.reload()
+            logging.debug(f"{plugin_name} successfully reloaded")
 
-    def load_all_plugins(self) -> None:
+    async def load_all_plugins(self) -> None:
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
-            plugin.load()
+            await plugin.load()
+            logging.debug(f"{plugin_name} successfully loaded")
 
-    def unload_all_plugins(self) -> None:
+    async def unload_all_plugins(self) -> None:
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
-            plugin.unload()
+            await plugin.unload()
+            logging.debug(f"{plugin_name} successfully unloaded")
 
     @property
     def requirements(self) -> list[str]:

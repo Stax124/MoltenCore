@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 import logging
 import os
 from threading import Thread
@@ -20,7 +21,8 @@ from routes import config, guild
 SelectOfScalar.inherit_cache = True  # type: ignore
 Select.inherit_cache = True  # type: ignore
 
-if __name__ == "__main__":
+
+def main():
     # Command line interface handling
     parser = argparse.ArgumentParser(
         prog="Trinity", description="Economy discord bot made in python"
@@ -116,4 +118,8 @@ if __name__ == "__main__":
     web_thread.start()
 
     # Start bot
-    bot.run(args.token, reconnect=True)
+    bot.run(args.token, reconnect=True, log_handler=None)
+
+
+if __name__ == "__main__":
+    main()

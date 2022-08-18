@@ -23,26 +23,26 @@ class Core(commands.Cog):
     def __init__(self, bot: ModularBot) -> None:
         self.bot = bot
 
+    async def load_default_extensions(self):
         if self.bot.cogs.__len__() == 0:
-            self.load_default_extensions()
-
-    def load_default_extensions(self):
-        for extension in default_extensions:
-            self.bot.load_extension(extension)
-            logger.info(f"{extension} loaded")
+            for extension in default_extensions:
+                await self.bot.load_extension(extension)
+                logger.info(f"{extension} loaded")
+        else:
+            logger.info("Default extensions already loaded, skipping")
 
     @commands.command(name="reload")
     @commands.is_owner()
     async def command_reload_extension(self, ctx: Context, extension: str) -> None:
         try:
-            self.bot.reload_extension(extension)
+            await self.bot.reload_extension(extension)
             logger.info(f"{extension} reloaded")
             embed = discord.Embed(color=0x00FF00, description=f"{extension} reloaded")
-            embed.set_author(name="Reload", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Reload", icon_url=self.bot.avatar_url)
         except ExtensionNotFound:
             logging.error(f"{extension} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{extension} not found")
-            embed.set_author(name="Reload", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Reload", icon_url=self.bot.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -50,20 +50,20 @@ class Core(commands.Cog):
     @commands.is_owner()
     async def command_load_extension(self, ctx: Context, extension: str) -> None:
         try:
-            self.bot.load_extension(extension)
+            await self.bot.load_extension(extension)
             logger.info(f"{extension} loaded")
             embed = discord.Embed(color=0x00FF00, description=f"{extension} loaded")
-            embed.set_author(name="Load", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Load", icon_url=self.bot.avatar_url)
         except ExtensionAlreadyLoaded:
             logging.warn(f"{extension} already loaded")
             embed = discord.Embed(
                 color=0xFF0000, description=f"{extension} already loaded"
             )
-            embed.set_author(name="Load", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Load", icon_url=self.bot.avatar_url)
         except ExtensionNotFound:
             logging.error(f"{extension} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{extension} not found")
-            embed.set_author(name="Load", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Load", icon_url=self.bot.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -71,20 +71,20 @@ class Core(commands.Cog):
     @commands.is_owner()
     async def command_unload_extension(self, ctx: Context, extension: str) -> None:
         try:
-            self.bot.unload_extension(extension)
+            await self.bot.unload_extension(extension)
             logger.info(f"{extension} unloaded")
             embed = discord.Embed(color=0x00FF00, description=f"{extension} unloaded")
-            embed.set_author(name="Unload", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Unload", icon_url=self.bot.avatar_url)
         except ExtensionNotFound:
             logging.error(f"{extension} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{extension} not found")
-            embed.set_author(name="Unload", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Unload", icon_url=self.bot.avatar_url)
         except ExtensionNotLoaded:
             logging.error(f"{extension} exists, but is not loaded")
             embed = discord.Embed(
                 color=0xFF0000, description=f"{extension} exists, but is not loaded"
             )
-            embed.set_author(name="Unload", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Unload", icon_url=self.bot.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -99,7 +99,7 @@ class Core(commands.Cog):
 
         for extension in all_extensions:
             try:
-                self.bot.reload_extension("extensions." + extension)
+                await self.bot.reload_extension("extensions." + extension)
                 logger.info(f"{extension} reloaded")
             except ExtensionNotFound:
                 ok = False
@@ -114,7 +114,7 @@ class Core(commands.Cog):
                 color=0x00FF00, description=f"All extensions reloaded"
             )
 
-        embed.set_author(name="Reload All", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Reload All", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
         ok = True
@@ -124,7 +124,7 @@ class Core(commands.Cog):
         for plugin_name in self.bot.plugins:
             try:
                 plugin = self.bot.plugins[plugin_name]
-                plugin.reload()
+                await plugin.reload()
                 logger.info(f"Plugin {plugin_name} reloaded")
             except Exception as e:
                 ok = False
@@ -145,7 +145,7 @@ class Core(commands.Cog):
     async def command_reload_plugin(self, ctx: Context, plugin: str) -> None:
         try:
             self.bot.plugin_handler.populate_plugins()
-            self.bot.plugins[plugin].reload()
+            await self.bot.plugins[plugin].reload()
             logger.info(f"{plugin} reloaded")
             embed = discord.Embed(color=0x00FF00, description=f"{plugin} reloaded")
         except KeyError:
@@ -155,7 +155,7 @@ class Core(commands.Cog):
             logging.error(f"{plugin} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{plugin} not found")
 
-        embed.set_author(name="Reload", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Reload", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="plugin-load")
@@ -163,7 +163,7 @@ class Core(commands.Cog):
     async def command_load_plugin(self, ctx: Context, plugin: str) -> None:
         try:
             self.bot.plugin_handler.populate_plugins()
-            self.bot.plugins[plugin].load()
+            await self.bot.plugins[plugin].load()
             logger.info(f"{plugin} loaded")
             embed = discord.Embed(color=0x00FF00, description=f"{plugin} loaded")
         except KeyError:
@@ -173,14 +173,14 @@ class Core(commands.Cog):
             logging.error(f"{plugin} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{plugin} not found")
 
-        embed.set_author(name="Load", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Load", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="plugin-unload")
     @commands.is_owner()
     async def command_unload_plugin(self, ctx: Context, plugin: str) -> None:
         try:
-            self.bot.plugins[plugin].unload()
+            await self.bot.plugins[plugin].unload()
             logger.info(f"{plugin} unloaded")
             embed = discord.Embed(color=0x00FF00, description=f"{plugin} unloaded")
         except KeyError:
@@ -190,9 +190,11 @@ class Core(commands.Cog):
             logging.error(f"{plugin} not found")
             embed = discord.Embed(color=0xFF0000, description=f"{plugin} not found")
 
-        embed.set_author(name="Unload", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Unload", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
 
-def setup(bot: ModularBot):
-    bot.add_cog(Core(bot))
+async def setup(bot: ModularBot):
+    cog = Core(bot)
+    await cog.load_default_extensions()
+    await bot.add_cog(cog)

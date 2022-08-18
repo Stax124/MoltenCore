@@ -19,5 +19,5 @@ class Tasks(commands.Cog):
     # TODO - Port all reconnect logic and tasks
 
 
-def setup(bot):
-    bot.add_cog(Tasks(bot))
+async def setup(bot):
+    await bot.add_cog(Tasks(bot))

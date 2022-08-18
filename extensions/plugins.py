@@ -17,9 +17,7 @@ class Plugins(commands.Cog):
 
         if not self.bot.plugins:
             embed = ModularEmbed(self.bot, title="No plugins found")
-            embed.set_author(
-                name="Plugins", icon_url=self.bot.user.avatar_url.__str__()
-            )
+            embed.set_author(name="Plugins", icon_url=self.bot.avatar_url)
             await ctx.send(embed=embed)
         else:
             modular_embed = ModularEmbedList(self.bot, ctx, title="Plugins")
@@ -31,5 +29,5 @@ class Plugins(commands.Cog):
             await modular_embed.build().run()
 
 
-def setup(bot):
-    bot.add_cog(Plugins(bot))
+async def setup(bot: ModularBot):
+    await bot.add_cog(Plugins(bot))

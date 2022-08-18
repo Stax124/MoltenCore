@@ -19,7 +19,7 @@ async def confirm(
         embed = discord.Embed(
             colour=discord.Colour.from_rgb(255, 255, 0), description=message
         )
-        embed.set_author(name=author, icon_url=bot.user.avatar_url.__str__())
+        embed.set_author(name=author, icon_url=bot.avatar_url)
 
         msg = await ctx.send(embed=embed)
         await msg.add_reaction("✅")

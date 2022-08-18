@@ -51,7 +51,7 @@ class Settings(commands.Cog):
             return
 
         embed = discord.Embed(colour=0x00FF00, description="✅ Paused...")
-        embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Pause", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
         config: Union[Config, None] = self.bot.database.query(Config).first()
@@ -69,7 +69,7 @@ class Settings(commands.Cog):
             embed = discord.Embed(
                 colour=0xFF0000, description="❌ Error... Config not found in database"
             )
-            embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Pause", icon_url=self.bot.avatar_url)
             await ctx.send(embed=embed)
 
     @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown")
@@ -80,7 +80,7 @@ class Settings(commands.Cog):
             return
 
         embed = discord.Embed(colour=0x00FF00, description="✅ Unpaused...")
-        embed.set_author(name="Unpause", icon_url=self.bot.user.avatar_url.__str__())
+        embed.set_author(name="Unpause", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
         config: Union[Config, None] = self.bot.database.query(Config).first()
@@ -98,9 +98,9 @@ class Settings(commands.Cog):
             embed = discord.Embed(
                 colour=0xFF0000, description="❌ Error... Config not found in database"
             )
-            embed.set_author(name="Pause", icon_url=self.bot.user.avatar_url.__str__())
+            embed.set_author(name="Pause", icon_url=self.bot.avatar_url)
             await ctx.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Settings(bot))
+async def setup(bot: ModularBot):
+    await bot.add_cog(Settings(bot))
