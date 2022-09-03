@@ -54,7 +54,7 @@ class Plugin:
 
         # If files are missing and can be downloaded, download them
         if not self.exists:
-            self.git_download()
+            self.git_clone()
         else:
             self.get_git_repo()
 
@@ -83,9 +83,13 @@ class Plugin:
         return f'plugins.{self.name}.{path.replace(".py", "").replace(" ", "_").replace("-", "_").replace(".", "_").replace("/", ".")}'
 
     def database_models(self):
+        "Returns a list of all the database models in the plugin repository"
+
         return [i for i in os.listdir(f"plugins/{self.name}/models")]
 
     def executable_files(self):
+        "Returns a list of files that can be executed by the bot"
+
         if os.path.exists(f"plugins/{self.name}"):
             return [
                 i
@@ -200,19 +204,45 @@ class Plugin:
             await self.unload()
 
     def update(self):
-        # TODO: Update the plugin
+        "Resets current repository and updates the plugin files"
 
-        raise NotImplementedError
+        if self.repo:
+            self.logger.info(f"Updating plugin {self.name}")
+            self.repo.head.reset(index=True, working_tree=True)
+            self.repo.remotes.origin.pull()
+        else:
+            self.logger.error(f"Could not update plugin {self.name}: Repo not loaded")
+
+    def check_update(self) -> bool:
+        "Checks if the plugin has an update on remote"
+
+        if self.repo:
+            return (
+                self.repo.head.object.hexsha
+                == self.repo.remote().refs.main.object.hexsha
+            )
+        else:
+            self.logger.error(f"Could not update plugin {self.name}: Repo not loaded")
+            return False
 
     def get_requirements(self) -> list[str]:
+        "Reads the requirements.txt file and returns a list of requirements"
+
         if os.path.exists(f"plugins/{self.name}/requirements.txt"):
             with open(f"plugins/{self.name}/requirements.txt", "r") as f:
                 return f.read().splitlines()
         else:
             return []
 
-    def git_download(self):
-        self.repo = Repo.clone_from(self.repo_url, f"plugins/{self.name}")
+    def git_clone(self):
+        "Clones the plugin repository"
+        self.repo = Repo.clone_from(
+            self.repo_url, f"plugins/{self.name}", single_branch=True
+        )
+
+        # Recheck if there are files to be loaded
+        self.empty = self.executable_files() == []
 
     def get_git_repo(self):
+        "Gets all the git information from the plugin repository"
         self.repo = Repo(f"plugins/{self.name}")
