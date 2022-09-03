@@ -29,7 +29,7 @@ class Core(commands.Cog):
                 await self.bot.load_extension(extension)
                 logger.info(f"{extension} loaded")
         else:
-            logger.info("Default extensions already loaded, skipping")
+            logger.info("Default extensions already loaded, skipping initial load")
 
     @commands.command(name="reload")
     @commands.is_owner()
@@ -97,6 +97,8 @@ class Core(commands.Cog):
 
         ok = True
 
+        logger.info("----------Beggining of reload----------")
+
         for extension in all_extensions:
             try:
                 await self.bot.reload_extension("extensions." + extension)
@@ -138,6 +140,7 @@ class Core(commands.Cog):
         if ok:
             embed = discord.Embed(color=0x00FF00, description=f"All plugins reloaded")
 
+        logger.info("----------End of reload----------")
         await ctx.send(embed=embed)
 
     @commands.command(name="plugin-reload")

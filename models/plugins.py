@@ -1,3 +1,4 @@
+from sqlalchemy import String
 from sqlmodel import BigInteger, Column, Field, SQLModel
 
 
@@ -5,18 +6,5 @@ class PluginData(SQLModel, table=True):
     id: int = Field(
         sa_column=Column(BigInteger(), primary_key=True, autoincrement=False)
     )
-    name: str
-    description: str = Field(default="")
-    author: str
-    version: str
-    folder_name: str
+    url: str = Field(sa_column=Column(String(255), nullable=False, server_default=""))
     enabled: bool = Field(default=False)
-
-
-class PluginFiles(SQLModel, table=True):
-    id: int = Field(
-        sa_column=Column(BigInteger(), primary_key=True, autoincrement=False)
-    )
-    plugin_id: int = Field(sa_column=Column(BigInteger(), autoincrement=False))
-    file: str
-    file_url: str

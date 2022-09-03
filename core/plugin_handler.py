@@ -35,8 +35,9 @@ class PluginHandler:
 
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
-            await plugin.reload()
-            logging.debug(f"{plugin_name} successfully reloaded")
+            if plugin.enabled:
+                await plugin.reload()
+                logging.debug(f"{plugin_name} successfully reloaded")
 
     async def load_all_plugins(self) -> None:
         for plugin_name in self.bot.plugins:

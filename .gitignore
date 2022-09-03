@@ -13,6 +13,7 @@ plugins/
 **/__pycache__
 poetry.lock
 test.py
+.pytest_cache/
 
 # Temp
 favicon.ico
@@ -36,7 +37,7 @@ frontend/node_modules
 frontend/*.local
 
 # Editor directories and files
-frontend/.vscode/*
+**/.vscode
 frontend/!.vscode/extensions.json
 frontend/.idea
 frontend/.DS_Store

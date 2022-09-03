@@ -19,11 +19,6 @@ class Settings(commands.Cog):
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    @commands.command(name="version")
-    @commands.has_permissions(administrator=True)
-    async def config(self, ctx: Context):
-        await ctx.send(self.bot.__version__)
-
     @commands.command(name="prefix")
     @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: Context, prefix: str):

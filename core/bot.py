@@ -18,7 +18,6 @@ from core.plugin_handler import PluginHandler
 
 def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
     if msg.channel.type == discord.ChannelType.private:
-        logging.debug("Private message, using default prefix")
         return commands.when_mentioned_or("!")(bot, msg)  # type: ignore
     else:
         if msg.guild == None:
@@ -28,7 +27,6 @@ def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
         server = bot.database.exec(statement).first()
         prefix = server.prefix if server else "!"
 
-        logging.debug(f"Using prefix {prefix} for this server")
         return commands.when_mentioned_or(prefix)(bot, msg)  # type: ignore
 
 
@@ -41,9 +39,6 @@ class ModularBot(AutoShardedBot):
             ),
             intents=discord.Intents.all(),
         )
-
-        # State of the bot
-        self.__version__: str = "0.0.1alpha"
 
         # Database stuff
         self.engine = generate_engine()
