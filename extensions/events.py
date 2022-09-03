@@ -9,6 +9,7 @@ from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
 
 from core.bot import ModularBot
 
+logger = logging.getLogger(__name__)
 
 class Events(commands.Cog):
     def __init__(self, bot: "ModularBot"):
@@ -20,7 +21,7 @@ class Events(commands.Cog):
 
         @bot.event
         async def on_command_error(ctx, error):
-            logging.debug(f"Error occured: {error}")
+            logger.debug(f"Error occured: {error}")
             if isinstance(error, CommandNotFound):
                 embed = discord.Embed(
                     colour=0xFF0000, description=f"❌ Command not found"
@@ -28,10 +29,10 @@ class Events(commands.Cog):
                 embed.set_author(name="Status", icon_url=bot.avatar_url)
                 await ctx.send(embed=embed)
             elif isinstance(error, NotFound):
-                logging.warning("Error 404, passing")
+                logger.warning("Error 404, passing")
                 pass
             elif isinstance(error, MissingRequiredArgument):
-                logging.debug(error)
+                logger.debug(error)
                 embed = discord.Embed(
                     colour=0xFF0000, description=f"❌ Missing required argument(s)"
                 )
@@ -39,7 +40,7 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
                 pass
             else:
-                logging.debug("Error not catched, raising")
+                logger.debug("Error not catched, raising")
                 raise error
 
 

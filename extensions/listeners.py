@@ -10,6 +10,8 @@ from models.guild import Guild
 
 from core.bot import ModularBot
 
+logger = logging.getLogger(__name__)
+
 
 class Listeners(commands.Cog):
     "Listeners for bot, feel free to add your own"
@@ -21,19 +23,20 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_connect(self):
-        logging.info("Bot sucessfully connected to Discord servers")
+        logger.info("Bot sucessfully connected to Discord servers")
 
     @commands.Cog.listener()
     async def on_connected(self):
-        logging.info("Connected to Discord servers")
+        logger.info("Connected to Discord servers, syncing slash commands")
+        await self.bot.sync()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        logging.info(f"Guilds joined: {len(self.bot.guilds)}")
+        logger.info(f"Guilds joined: {len(self.bot.guilds)}")
 
         for guild in self.bot.guilds:
             if self.bot.database.query(Guild).filter_by(id=guild.id).first() is None:
-                logging.info(f"Adding guild {guild.name} to database")
+                logger.info(f"Adding guild {guild.name} to database")
                 self.bot.database.add(Guild(id=guild.id))
                 self.bot.database.commit()
 
@@ -43,12 +46,12 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_disconnect(self):
-        logging.info("Bot lost connection to Discord servers")
+        logger.info("Bot lost connection to Discord servers")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         if self.bot.database.query(Guild).filter_by(id=guild.id).first() is None:
-            logging.info(f"Adding guild {guild.name} to database")
+            logger.info(f"Adding guild {guild.name} to database")
             self.bot.database.add(Guild(id=guild.id))
             self.bot.database.commit()
 
@@ -61,7 +64,7 @@ class Listeners(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
         if self.bot.database.query(Guild).filter_by(id=guild.id).first() is not None:
-            logging.info(f"Removing guild {guild.name} from database")
+            logger.info(f"Removing guild {guild.name} from database")
             self.bot.database.query(Guild).filter_by(id=guild.id).delete()
             self.bot.database.commit()
 

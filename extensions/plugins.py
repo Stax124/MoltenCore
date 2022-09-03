@@ -14,7 +14,7 @@ class Plugins(commands.Cog):
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    @commands.command(name="plugins")
+    @commands.hybrid_command(name="plugins")
     @commands.is_owner()
     async def plugins(self, ctx: Context):
 
@@ -31,7 +31,7 @@ class Plugins(commands.Cog):
                 )
             await modular_embed.build().run()
 
-    @commands.command(name="plugin")
+    @commands.hybrid_command(name="plugin")
     @commands.is_owner()
     async def plugin(self, ctx: Context, *, plugin_name: str):
         plugin = self.bot.plugins[plugin_name]
@@ -60,7 +60,7 @@ class Plugins(commands.Cog):
 
             await ctx.send(embed=embed)
 
-    @commands.command(name="enable-plugin")
+    @commands.hybrid_command(name="enable-plugin")
     @commands.is_owner()
     async def enable_plugin(self, ctx: Context, *, plugin_name: str):
         plugin = self.bot.plugins[plugin_name]
@@ -82,7 +82,7 @@ class Plugins(commands.Cog):
                 )
             )
 
-    @commands.command(name="disable-plugin")
+    @commands.hybrid_command(name="disable-plugin")
     @commands.is_owner()
     async def disable_plugin(self, ctx: Context, *, plugin_name: str):
         plugin = self.bot.plugins[plugin_name]

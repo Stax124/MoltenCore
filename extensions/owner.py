@@ -14,6 +14,7 @@ from core.bot import ModularBot
 from core.confirm import confirm
 from core.embed import ModularEmbedList
 
+logger = logging.getLogger(__name__)
 
 class Owner(commands.Cog):
     "Owner commands"
@@ -21,18 +22,18 @@ class Owner(commands.Cog):
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    @commands.command(name="shutdown", help="Terminate the process", pass_context=True)  # type: ignore
+    @commands.hybrid_command(name="shutdown", help="Terminate the process")  # type: ignore
     @commands.is_owner()
     async def shutdown(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Terminate process ?")
         if not confirmed:
             return
 
-        logging.warning("Shutting down bot")
+        logger.warning("Shutting down bot")
         embed = discord.Embed(colour=0x00FF00, description="✅ Shutting down...")
         embed.set_author(name="Shutdown", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
-        logging.info("Shutting down...")
+        logger.info("Shutting down...")
 
         await self.bot.change_presence(
             activity=discord.Game(name=f"Shutting down..."), status=Status.offline
@@ -40,7 +41,7 @@ class Owner(commands.Cog):
         sys.exit()
 
     @commands.is_owner()
-    @commands.command(name="eval", help="Evaluate string", pass_context=True)  # type: ignore
+    @commands.hybrid_command(name="eval", help="Evaluate string")  # type: ignore
     async def eval(self, ctx: Context, *, message: str):
         if self.bot.enable_rce:
             try:
@@ -54,7 +55,7 @@ class Owner(commands.Cog):
             await ctx.send("RCE disabled by default")
 
     @commands.is_owner()
-    @commands.command(name="exec", help="Execute string", pass_context=True)  # type: ignore
+    @commands.hybrid_command(name="exec", help="Execute string")  # type: ignore
     async def exec(self, ctx: Context, *, message: str):
         if self.bot.enable_rce:
             try:

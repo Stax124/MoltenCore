@@ -57,6 +57,9 @@ class ModularBot(AutoShardedBot):
         # RCE
         self.enable_rce: bool = enable_rce
 
+    async def sync(self):
+        await self.tree.sync()
+
     def run(
         self,
         token: str,

@@ -12,6 +12,7 @@ from models.guild import Guild
 from core.bot import ModularBot
 from core.confirm import confirm
 
+logger = logging.getLogger(__name__)
 
 class Settings(commands.Cog):
     "Settings"
@@ -19,7 +20,7 @@ class Settings(commands.Cog):
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    @commands.command(name="prefix")
+    @commands.hybrid_command(name="prefix")
     @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: Context, prefix: str):
         if await confirm(self.bot, ctx, message=f"Set prefix to `{prefix}` ?"):
@@ -30,7 +31,7 @@ class Settings(commands.Cog):
                     self.bot.database.query(Guild).filter_by(id=ctx.guild.id).first()
                     is not None
                 ):
-                    logging.info(
+                    logger.info(
                         f"Updating prefix for guild {ctx.guild.name} to `{prefix}`"
                     )
                     self.bot.database.query(Guild).filter_by(id=ctx.guild.id).update(
@@ -38,7 +39,7 @@ class Settings(commands.Cog):
                     )
                     self.bot.database.commit()
 
-    @commands.command(name="pause", help="Show the bot, whos da boss: shutdown")
+    @commands.hybrid_command(name="pause", help="Pauses all command executions")
     @commands.is_owner()
     async def pause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Pause process ?")
@@ -55,7 +56,7 @@ class Settings(commands.Cog):
             config.paused = True
             self.bot.database.commit()
 
-            logging.info("Paused...")
+            logger.info("Paused...")
 
             await self.bot.change_presence(
                 activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb
@@ -67,7 +68,7 @@ class Settings(commands.Cog):
             embed.set_author(name="Pause", icon_url=self.bot.avatar_url)
             await ctx.send(embed=embed)
 
-    @commands.command(name="unpause", help="Show the bot, whos da boss: shutdown")
+    @commands.hybrid_command(name="unpause", help="Resumes all command executions")
     @commands.is_owner()
     async def unpause(self, ctx: Context):
         confirmed = await confirm(self.bot, ctx, "Unpause process ?")
@@ -84,7 +85,7 @@ class Settings(commands.Cog):
             config.paused = False
             self.bot.database.commit()
 
-            logging.info("Unpaused...")
+            logger.info("Unpaused...")
 
             await self.bot.change_presence(
                 activity=Activity(name=f"commands", type=ActivityType.listening)
