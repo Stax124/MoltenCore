@@ -23,10 +23,6 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_connect(self):
-        logger.info("Bot sucessfully connected to Discord servers")
-
-    @commands.Cog.listener()
-    async def on_connected(self):
         logger.info("Connected to Discord servers, syncing slash commands")
         await self.bot.sync()
 
