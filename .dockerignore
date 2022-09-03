@@ -1,12 +1,27 @@
 # Python
 __pycache__
 .mypy_cache
+.pytest_cache
+**/*.pyc
+poetry.lock
+pyrightconfig.json
+
+# Exclude frontend, will be imported with DOCKERFILE
+frontend/
+
+# Database
+alembic.ini
+
+# Plugins
+plugins/
 
 # Other
 .github
 .git
 .gitignore
 .vscode
+README.md
 
-# Exclude frontend, will be imported with DOCKERFILE
-frontend/
+# Docker
+docker-compose.yml
+Dockerfile
