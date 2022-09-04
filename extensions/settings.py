@@ -14,13 +14,16 @@ from core.confirm import confirm
 
 logger = logging.getLogger(__name__)
 
+
 class Settings(commands.Cog):
     "Settings"
 
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    @commands.hybrid_command(name="prefix")
+    @commands.hybrid_command(
+        name="prefix", help="Change the prefix for the current guild"
+    )
     @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: Context, prefix: str):
         if await confirm(self.bot, ctx, message=f"Set prefix to `{prefix}` ?"):

@@ -31,7 +31,7 @@ class Core(commands.Cog):
         else:
             logger.info("Default extensions already loaded, skipping initial load")
 
-    @commands.hybrid_command(name="reload")
+    @commands.hybrid_command(name="reload", help="Reloads an extension")
     @commands.is_owner()
     async def command_reload_extension(self, ctx: Context, extension: str) -> None:
         try:
@@ -46,7 +46,7 @@ class Core(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="load")
+    @commands.hybrid_command(name="load", help="Loads an extension")
     @commands.is_owner()
     async def command_load_extension(self, ctx: Context, extension: str) -> None:
         try:
@@ -67,7 +67,7 @@ class Core(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="unload")
+    @commands.hybrid_command(name="unload", help="Unloads an extension")
     @commands.is_owner()
     async def command_unload_extension(self, ctx: Context, extension: str) -> None:
         try:
@@ -88,7 +88,9 @@ class Core(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="reload-all")
+    @commands.hybrid_command(
+        name="reload-all", help="Reloads all extensions and plugins"
+    )
     @commands.is_owner()
     async def command_reload_all_extensions(self, ctx: Context) -> None:
         all_extensions = [
@@ -143,7 +145,7 @@ class Core(commands.Cog):
         logger.info("----------End of reload----------")
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="plugin-reload")
+    @commands.hybrid_command(name="plugin-reload", help="Reloads a plugin")
     @commands.is_owner()
     async def command_reload_plugin(self, ctx: Context, plugin: str) -> None:
         try:
@@ -161,7 +163,7 @@ class Core(commands.Cog):
         embed.set_author(name="Reload", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="plugin-load")
+    @commands.hybrid_command(name="plugin-load", help="Loads a plugin")
     @commands.is_owner()
     async def command_load_plugin(self, ctx: Context, plugin: str) -> None:
         try:
@@ -179,7 +181,7 @@ class Core(commands.Cog):
         embed.set_author(name="Load", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="plugin-unload")
+    @commands.hybrid_command(name="plugin-unload", help="Unloads a plugin")
     @commands.is_owner()
     async def command_unload_plugin(self, ctx: Context, plugin: str) -> None:
         try:

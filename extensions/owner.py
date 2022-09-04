@@ -16,6 +16,7 @@ from core.embed import ModularEmbedList
 
 logger = logging.getLogger(__name__)
 
+
 class Owner(commands.Cog):
     "Owner commands"
 

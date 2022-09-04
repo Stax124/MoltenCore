@@ -8,8 +8,10 @@ from discord.ext import commands
 from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
 
 from core.bot import ModularBot
+from core.embed import ModularEmbedList
 
 logger = logging.getLogger(__name__)
+
 
 class Events(commands.Cog):
     def __init__(self, bot: "ModularBot"):
