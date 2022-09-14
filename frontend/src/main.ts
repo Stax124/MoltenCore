@@ -2,9 +2,9 @@ import ChakraUIVuePlugin, { chakra } from "@chakra-ui/vue-next";
 import { domElements } from "@chakra-ui/vue-system";
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
+import App from "./App.vue";
 import Home from "./views/Home.vue";
 import Plugins from "./views/Plugins.vue";
-import App from "./App.vue";
 
 const routes = [
 	{ path: "/", component: Home, name: "Home" },

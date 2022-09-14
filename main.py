@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import subprocess
 from threading import Thread
 
 from coloredlogs import install as install_coloredlogs
@@ -87,6 +88,15 @@ def main():
 
     logger = logging.getLogger()
     logger.name = "bot"
+
+    # Check if git is installed
+    try:
+        subprocess.run(["git", "--version"], stdout=subprocess.DEVNULL, check=True)
+    except subprocess.CalledProcessError:
+        logger.error(
+            "Git is not installed, please install it from `https://git-scm.com/downloads`"
+        )
+        exit(1)
 
     # Quit if not in virtualenv
     if not is_in_virtualenv():

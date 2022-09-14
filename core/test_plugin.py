@@ -10,7 +10,7 @@ from core.plugin import Plugin
 @pytest.fixture()
 def plugin():
     bot = ModularBot()
-    data = PluginData(id=1, url="https://github.com/Stax124/test-plugin")
+    data = PluginData(id=1, url="https://github.com/Stax124/test-plugin", enabled=True)
     return Plugin(data, bot)
 
 
