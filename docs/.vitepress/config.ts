@@ -6,7 +6,7 @@ export default defineConfig({
 	lang: "en-US",
 	appearance: true,
 	lastUpdated: true,
-	base: "/Modular-Discord-Bot/docs/",
+	base: "/Modular-Discord-Bot/",
 	themeConfig: {
 		sidebar: [
 			{
