@@ -22,7 +22,7 @@ tasks.json
 .mypy_cache
 
 # Frontend
-yarn.lock
+frontend/yarn.lock
 
 # Logs
 frontend/logs
