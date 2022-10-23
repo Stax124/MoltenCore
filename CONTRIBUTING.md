@@ -1,4 +1,4 @@
-# VitePress Contributing Guide
+# Modular-Discord-Bot Contributing Guide
 
 Hi! We're really excited that you are interested in contributing to VitePress. Before submitting your contribution, please make sure to take a moment and read through the following guidelines:
 
