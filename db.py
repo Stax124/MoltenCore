@@ -8,7 +8,7 @@ config = ConfigParser()
 config.read("alembic.ini")
 
 
-def generate_engine(verbose=False) -> Engine:
+def generate_engine(verbose: bool = False) -> Engine:
     return _create_engine(config["alembic"]["sqlalchemy.url"], echo=verbose)
 
 

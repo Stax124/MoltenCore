@@ -1,6 +1,6 @@
 import pytest
 
-from core.github_parser import Repository
+from core.parser.github_parser import Repository
 
 
 @pytest.fixture()

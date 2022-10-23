@@ -1,7 +1,7 @@
 import pytest
 from sqlmodel.sql.expression import Select, SelectOfScalar
 
-from core.bot import ModularBot
+from core.bot.bot import ModularBot
 
 # Fix sqlalchemy caching with sqlmodel
 SelectOfScalar.inherit_cache = True  # type: ignore

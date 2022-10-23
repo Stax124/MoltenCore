@@ -1,2 +1,0 @@
-class ValidatorNotFound(Exception):
-    pass

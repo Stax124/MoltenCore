@@ -7,7 +7,7 @@ db.sqlite3
 pyrightconfig.json
 
 # Plugins
-plugins/
+./plugins/
 
 # Python specific stuff
 **/__pycache__
@@ -46,3 +46,8 @@ frontend/*.ntvs*
 frontend/*.njsproj
 frontend/*.sln
 frontend/*.sw?
+
+# Docs
+doxygen/
+**/**/node_modules
+docs/.vuepress

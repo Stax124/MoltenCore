@@ -57,6 +57,14 @@ pytest = "^7.1.3"
     help= "Test the project"
     cmd = "python -m pytest --ignore=plugins"
 
+    [tool.poe.tasks.doxygen]
+    help= "Generate doxygen documentation"
+    cmd = "doxygen"
+
+    [tool.poe.tasks.docs]
+    help= "Generate documentation"
+    cmd = "doxybook2 --input doxygen/xml --output docs --config doxybook2.json"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

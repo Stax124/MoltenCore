@@ -2,7 +2,7 @@
 	<div class="navbar">
 		<div class="icon-container">
 			<router-link to="/">
-				<CIconButton icon="" />
+				<CIconButton icon="home" aria-label="home" />
 			</router-link>
 		</div>
 		<div class="content-container">

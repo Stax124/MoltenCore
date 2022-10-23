@@ -8,7 +8,7 @@ from discord.enums import ActivityType
 from discord.ext import commands
 from models.guild import Guild
 
-from core.bot import ModularBot
+from core.bot.bot import ModularBot
 
 logger = logging.getLogger(__name__)
 

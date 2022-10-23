@@ -1,5 +1,7 @@
+import json
 import logging
 import os
+from sqlmodel import select
 import traceback
 from typing import TYPE_CHECKING, Optional
 
@@ -11,12 +13,13 @@ from discord.ext.commands.errors import (
     NoEntryPointError,
 )
 from git.repo import Repo
-from models.plugins import PluginData
 
-from core.github_parser import Repository
+from core.parser.github_parser import Repository
+from core.plugins.plugin_encoder import PluginEncoder
+from models.plugins import PluginData, PluginPermission, PluginPermissions
 
 if TYPE_CHECKING:
-    from core.bot import ModularBot
+    from core.bot.bot import ModularBot
 
 
 class Plugin:
@@ -28,6 +31,7 @@ class Plugin:
         self.enabled = plugin_data.enabled
         self.repo_url = plugin_data.url
         self.repo: Optional[Repo] = None
+        self.plugin_data = plugin_data
 
         # Plugin data
         self.repo_data = Repository(self.repo_url)
@@ -39,12 +43,12 @@ class Plugin:
         self.license = self.repo_data.license
         self.last_updated = self.repo_data.last_updated
 
+        # Logger
+        self.logger = logging.getLogger("plugin." + self.name)
+
         # Traceback
         self.traceback: str = ""
         self.short_traceback: str = ""
-
-        # Logger
-        self.logger = logging.getLogger("plugin." + self.name)
 
         # Bot needs to be here to access the database
         self.bot: "ModularBot" = bot
@@ -63,11 +67,18 @@ class Plugin:
             self.logger.warning(f"{self.name} has no files, it will not be loaded")
             self.enabled = False
 
+        # Permissions
+        self.permissions = self.get_permissions()
+
     def __repr__(self) -> str:
         return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
 
     def __str__(self) -> str:
         return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
+
+    def to_dict(self) -> dict:
+        encoder = PluginEncoder()
+        return encoder.default(self)
 
     def does_exist(self):
         if os.path.exists(f"plugins/{self.name}") and os.path.exists(
@@ -76,6 +87,51 @@ class Plugin:
             return True
         else:
             return False
+
+    def get_permissions(self):
+        db_perms = self.bot.database.exec(
+            select(PluginPermissions).where(PluginPermissions.plugin_id == self.id)
+        ).all()
+
+        if db_perms:
+            return db_perms[0]
+        else:
+            return self.generate_permissions()
+
+    def generate_permissions(self) -> PluginPermissions:
+        "Check if plugin requires any permissions, if so, make changes in the database"
+
+        permissions = PluginPermissions(plugin_id=self.id)
+
+        self.logger.debug(
+            f"Plugin {self.name} has no permissions in the database, generating"
+        )
+
+        config_file = f"plugins/{self.name}/plugin.json"
+        if os.path.exists(config_file):
+            try:
+                config: dict = json.load(open(config_file, "r"))
+            except json.JSONDecodeError:
+                config: dict = {}
+        else:
+            config: dict = {}
+
+        if config.get("permissions", []):
+            self.logger.debug(
+                f"Permissions for plugin {self.name}: {config.get('permissions', [])}"
+            )
+            for permission in config.get("permissions", []):
+                if permissions.__dict__[permission] and (
+                    permissions.__dict__[permission] != PluginPermission.APPROVED
+                    or permissions.__dict__[permission] != PluginPermission.DENIED
+                ):
+                    permissions.__dict__[permission] = PluginPermission.REQUESTED
+        else:
+            self.logger.debug(f"No permissions required for plugin {self.name}")
+
+        self.bot.database.add(permissions)
+        self.bot.database.commit()
+        return permissions
 
     def generate_safe_path(self, path: str) -> str:
         "Generates a safe path for module loading"

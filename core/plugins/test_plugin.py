@@ -3,8 +3,8 @@ import logging
 import pytest
 from models.plugins import PluginData
 
-from core.bot import ModularBot
-from core.plugin import Plugin
+from core.bot.bot import ModularBot
+from core.plugins.plugin import Plugin
 
 
 @pytest.fixture()

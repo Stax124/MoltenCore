@@ -9,8 +9,8 @@ from discord.ext.commands.context import Context
 from models.config import Config
 from models.guild import Guild
 
-from core.bot import ModularBot
-from core.confirm import confirm
+from core.bot.bot import ModularBot
+from core.functions.confirm import confirm
 
 logger = logging.getLogger(__name__)
 

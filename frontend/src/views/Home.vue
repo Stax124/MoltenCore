@@ -1,5 +1,6 @@
 <script lang="ts">
 import { CBadge, CBox, CFlex, CIcon, CText } from "@chakra-ui/vue-next";
+
 export default {
 	name: "Home",
 	components: {
@@ -13,6 +14,7 @@ export default {
 </script>
 
 <template>
+	<v-container></v-container>
 	<CBox
 		w="300px"
 		font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';"

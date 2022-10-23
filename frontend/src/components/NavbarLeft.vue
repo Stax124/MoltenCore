@@ -3,17 +3,17 @@
 		<ul>
 			<li>
 				<router-link to="/">
-					<CIconButton icon="home" />
+					<CIconButton icon="home" aria-label="home"/>
 				</router-link>
 			</li>
 			<li>
 				<router-link to="/">
-					<CIconButton icon="home" />
+					<CIconButton icon="home" aria-label="home"/>
 				</router-link>
 			</li>
 			<li>
 				<router-link to="/">
-					<CIconButton icon="" />
+					<CIconButton icon="" aria-label="home"/>
 				</router-link>
 			</li>
 			<li>

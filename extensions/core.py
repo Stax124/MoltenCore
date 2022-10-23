@@ -11,8 +11,8 @@ from discord.ext.commands.errors import (
     ExtensionNotLoaded,
 )
 
-from core.bot import ModularBot
-from core.functions import get_extensions
+from core.bot.bot import ModularBot
+from core.functions.functions import get_extensions
 
 default_extensions = get_extensions()
 
@@ -117,6 +117,8 @@ class Core(commands.Cog):
             embed = discord.Embed(
                 color=0x00FF00, description=f"All extensions reloaded"
             )
+        else:
+            embed = discord.Embed(color=0xFF0000, description=f"Some failiures occured")
 
         embed.set_author(name="Reload All", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
@@ -141,6 +143,8 @@ class Core(commands.Cog):
 
         if ok:
             embed = discord.Embed(color=0x00FF00, description=f"All plugins reloaded")
+        else:
+            embed = discord.Embed(color=0xFF0000, description=f"Some failiures occured")
 
         logger.info("----------End of reload----------")
         await ctx.send(embed=embed)

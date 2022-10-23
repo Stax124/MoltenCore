@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.context import Context
 
-from core.bot import ModularBot
-from core.embed import ModularEmbed, ModularEmbedList
+from core.bot.bot import ModularBot
+from core.structures.embed import ModularEmbed, ModularEmbedList
 
 
 class Plugins(commands.Cog):

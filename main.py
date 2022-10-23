@@ -6,16 +6,13 @@ from threading import Thread
 
 from coloredlogs import install as install_coloredlogs
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from sqlmodel.sql.expression import Select, SelectOfScalar
-from starlette.responses import FileResponse
 from uvicorn import run as uvicorn_run
 
 import core.shared as shared
-from core.bot import ModularBot
-from core.const import loglevels
-from core.functions import generate_necessarry_files, is_in_virtualenv
-from routes import config, guild
+from core.bot.bot import ModularBot
+from core.structures.const import loglevels
+from core.functions.functions import generate_necessarry_files, is_in_virtualenv
 
 # Fix sqlalchemy caching with sqlmodel
 SelectOfScalar.inherit_cache = True  # type: ignore
@@ -25,7 +22,8 @@ Select.inherit_cache = True  # type: ignore
 def main():
     # Command line interface handling
     parser = argparse.ArgumentParser(
-        prog="Trinity", description="Economy discord bot made in python"
+        prog="ModularBot",
+        description="Easy to use Discord bot that can be extended with plugins",
     )
     parser.add_argument(
         "-l",
@@ -52,10 +50,15 @@ def main():
     parser.add_argument(
         "--host", default="0.0.0.0", type=str, help="Host address to bind to"
     )
+    parser.add_argument(
+        "--verbose-database",
+        action="store_true",
+        help="Enable logging the SQL queries (logging level: INFO)",
+    )
     parser.add_argument("--port", default=8080, type=int, help="Port to bind to")
     args = parser.parse_args()
 
-    def run_web(host: str = "0.0.0.0", port: int = 8080) -> None:
+    def run_web(app: FastAPI, host: str = "0.0.0.0", port: int = 8080) -> None:
         uvicorn_run(app, host=host, port=port)
 
     # Generate all necessary files and directories
@@ -68,6 +71,8 @@ def main():
     discord_client_logger.setLevel(logging.INFO)
     discord_http_logger = logging.getLogger("discord.http")
     discord_http_logger.setLevel(logging.INFO)
+    discord_webhook_logger = logging.getLogger("discord.webhook.async_")
+    discord_webhook_logger.setLevel(logging.INFO)
 
     # Log into file if specified
     if args.file:
@@ -106,23 +111,19 @@ def main():
         exit(1)
 
     # Init bot and add necessary commands
-    bot = ModularBot(enable_rce=args.enable_rce, disable_plugins=args.disable_plugins)
+    bot = ModularBot(
+        enable_rce=args.enable_rce,
+        disable_plugins=args.disable_plugins,
+        verbose_database=args.verbose_database,
+    )
 
     shared.bot = bot
 
     # Web
-    app = FastAPI()
-    app.include_router(config.router)
-    app.include_router(guild.router)
-    app.mount("/assets", StaticFiles(directory="./frontend/dist/assets"), name="assets")
-
-    @app.get("/")
-    async def index():
-        logger.info("index")
-        return FileResponse("./frontend/dist/index.html")
+    from api.app import app as api_app
 
     # Start web server in separate thread
-    web_thread = Thread(target=run_web, args=[args.host, args.port])
+    web_thread = Thread(target=run_web, args=[api_app, args.host, args.port])
     web_thread.daemon = True
     web_thread.start()
 

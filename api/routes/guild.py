@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from models.guild import Guild
 from sqlmodel import select
 
-router = APIRouter(tags=["guild"])
+router = APIRouter(tags=["guilds"])
 engine = generate_engine()
 db = get_session(engine)
 
@@ -13,6 +13,6 @@ async def guild(guild_id: int):
     return db.exec(select(Guild).where(Guild.id == guild_id)).all().__str__()
 
 
-@router.get("/guilds")
+@router.get("/")
 async def guilds():
     return db.exec(select(Guild)).all().__str__()

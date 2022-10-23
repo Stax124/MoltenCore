@@ -4,13 +4,13 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 
-from models.plugins import PluginData
 from sqlmodel import select
 
-from core.plugin import Plugin
+from core.plugins.plugin import Plugin
+from models.plugins import PluginData
 
 if TYPE_CHECKING:
-    from core.bot import ModularBot
+    from core.bot.bot import ModularBot
 
 
 class PluginHandler:

@@ -7,8 +7,8 @@ from discord.errors import NotFound
 from discord.ext import commands
 from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
 
-from core.bot import ModularBot
-from core.embed import ModularEmbedList
+from core.bot.bot import ModularBot
+from core.structures.embed import ModularEmbedList
 
 logger = logging.getLogger(__name__)
 

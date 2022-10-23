@@ -12,8 +12,8 @@ from models.guild import Guild
 from pretty_help import PrettyHelp
 from sqlmodel import Session, select
 
-from core.plugin import Plugin
-from core.plugin_handler import PluginHandler
+from core.plugins.plugin import Plugin
+from core.plugins.plugin_handler import PluginHandler
 
 
 def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
@@ -31,7 +31,12 @@ def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
 
 
 class ModularBot(AutoShardedBot):
-    def __init__(self, enable_rce: bool = False, disable_plugins: bool = False) -> None:
+    def __init__(
+        self,
+        enable_rce: bool = False,
+        disable_plugins: bool = False,
+        verbose_database: bool = False,
+    ) -> None:
         super().__init__(
             command_prefix=get_prefix,  # type: ignore
             help_command=PrettyHelp(
@@ -40,8 +45,8 @@ class ModularBot(AutoShardedBot):
             intents=discord.Intents.all(),
         )
 
-        # Database stuff
-        self.engine = generate_engine()
+        # Set up database
+        self.engine = generate_engine(verbose=verbose_database)
         self.database: Session = get_session(self.engine)
 
         # Set up config for the bot

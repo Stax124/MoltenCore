@@ -1,0 +1,17 @@
+{
+  "name": "modular-docs",
+  "version": "0.0.1",
+  "description": "Documentation for Modular Discord bot",
+  "main": "index.js",
+  "repository": "https://github.com/Stax124/Modular-Discord-Bot.git",
+  "author": "Stax124 <tamoncz@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "vitepress": "^1.0.0-alpha.21",
+    "vue": "^3.2.41"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs"
+  }
+}

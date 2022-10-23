@@ -1,3 +1,3 @@
-from core.bot import ModularBot
+from core.bot.bot import ModularBot
 
 bot: ModularBot

@@ -10,9 +10,9 @@ from discord.ext import commands
 from discord.ext.commands.context import Context
 from sqlmodel import select  # For eval
 
-from core.bot import ModularBot
-from core.confirm import confirm
-from core.embed import ModularEmbedList
+from core.bot.bot import ModularBot
+from core.functions.confirm import confirm
+from core.structures.embed import ModularEmbedList
 
 logger = logging.getLogger(__name__)
 

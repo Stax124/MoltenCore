@@ -7,10 +7,10 @@ from discord.ext.commands import Context
 from models.config import Config
 from sqlmodel import select
 
-from core.paginator import Paginator
+from core.functions.paginator import Paginator
 
 if TYPE_CHECKING:
-    from core.bot import ModularBot
+    from core.bot.bot import ModularBot
 
 
 class NoDataProvided(Exception):
