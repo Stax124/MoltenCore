@@ -25,37 +25,41 @@ pytest = "^7.1.3"
 
 [tool.poe.tasks]
 
-    [tool.poe.tasks.build]
-    help= "Build docker container"
-    cmd = "docker build -t modular ."
+[tool.poe.tasks.build]
+help = "Build docker container"
+cmd = "docker build -t modular ."
 
-    [tool.poe.tasks.start]
-    help= "Run the application"
-    cmd = "python main.py -l DEBUG --enable-rce"
+[tool.poe.tasks.dev]
+help = "Run the application in development mode"
+cmd = "python main.py -l DEBUG --enable-rce"
 
-    [tool.poe.tasks.format]
-    help= "Format the code"
-    cmd = "black ."
+[tool.poe.tasks.start]
+help = "Run the application"
+cmd = "python main.py"
 
-    [tool.poe.tasks.web]
-    help= "Run the web server"
-    cmd = "uvicorn web:app --reload"
+[tool.poe.tasks.format]
+help = "Format the code"
+cmd = "black ."
 
-    [tool.poe.tasks.requirements]
-    help= "Export the requirements"
-    cmd = "poetry export -f requirements.txt --without-hashes"
+[tool.poe.tasks.web]
+help = "Run the web server"
+cmd = "uvicorn web:app --reload"
 
-    [tool.poe.tasks.revision]
-    help= "Generate new alembic revision"
-    cmd = "alembic revision --autogenerate"
+[tool.poe.tasks.requirements]
+help = "Export the requirements"
+cmd = "poetry export -f requirements.txt --without-hashes"
 
-    [tool.poe.tasks.migrate]
-    help= "Migrate the database"
-    cmd = "alembic upgrade head"
+[tool.poe.tasks.revision]
+help = "Generate new alembic revision"
+cmd = "alembic revision --autogenerate"
 
-    [tool.poe.tasks.test]
-    help= "Test the project"
-    cmd = "python -m pytest --ignore=plugins"
+[tool.poe.tasks.migrate]
+help = "Migrate the database"
+cmd = "alembic upgrade head"
+
+[tool.poe.tasks.test]
+help = "Test the project"
+cmd = "python -m pytest --ignore=plugins"
 
 [build-system]
 requires = ["poetry>=0.12"]

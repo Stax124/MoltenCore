@@ -4,14 +4,13 @@ import os
 import subprocess
 from threading import Thread
 
-from coloredlogs import install as install_coloredlogs
 from fastapi import FastAPI
 from sqlmodel.sql.expression import Select, SelectOfScalar
 from uvicorn import run as uvicorn_run
+from core.logger import install_logger
 
 import core.shared as shared
 from core.bot.bot import ModularBot
-from core.structures.const import loglevels
 from core.functions.functions import generate_necessarry_files, is_in_virtualenv
 
 # Fix sqlalchemy caching with sqlmodel
@@ -75,21 +74,7 @@ def main():
     discord_webhook_logger.setLevel(logging.INFO)
 
     # Log into file if specified
-    if args.file:
-        logging.basicConfig(
-            level=loglevels[args.logging],
-            handlers=[logging.FileHandler(args.file, "w", "utf-8")],
-            format="%(levelname)s | %(asctime)s | %(name)s |->| %(message)s",
-            datefmt=r"%H:%M:%S",
-        )
-
-    # Coloring the logs
-    install_coloredlogs(
-        level=loglevels[args.logging],
-        fmt="%(levelname)s | %(asctime)s | %(name)s |->| %(message)s",
-        datefmt=r"%H:%M:%S",
-        reconfigure=False,
-    )
+    install_logger(args.file, args.logging)
 
     logger = logging.getLogger()
     logger.name = "bot"

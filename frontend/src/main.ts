@@ -1,28 +1,11 @@
-import ChakraUIVuePlugin, { chakra } from "@chakra-ui/vue-next";
-import { domElements } from "@chakra-ui/vue-system";
 import { createApp } from "vue";
-import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./App.vue";
-import Home from "./views/Home.vue";
-import Plugins from "./views/Plugins.vue";
+import router from "./router";
 
-const routes = [
-	{ path: "/", component: Home, name: "Home" },
-	{ path: "/plugins", component: Plugins, name: "Plugins" },
-];
-
-const router = createRouter({
-	history: createWebHashHistory(),
-	routes,
-});
+import "./assets/main.css";
 
 const app = createApp(App);
 
 app.use(router);
-app.use(ChakraUIVuePlugin);
-
-domElements.forEach((tag) => {
-	app.component(`chakra.${tag}`, chakra(tag));
-});
 
 app.mount("#app");

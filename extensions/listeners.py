@@ -19,8 +19,6 @@ class Listeners(commands.Cog):
     def __init__(self, bot: "ModularBot"):
         self.bot = bot
 
-    # region Default
-
     @commands.Cog.listener()
     async def on_connect(self):
         logger.info("Connected to Discord servers, syncing slash commands")

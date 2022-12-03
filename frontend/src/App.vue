@@ -1,31 +1,35 @@
 <template>
-	<NavbarTop />
-	<div class="view-container">
-		<NavbarLeft />
-		<router-view />
-	</div>
+  <CollapsileNavbarVue :items="navbarItems" />
+  <NConfigProvider :theme="darkTheme">
+    <routerContainerVue />
+  </NConfigProvider>
 </template>
 
-<script lang="ts">
-import NavbarLeft from "./components/NavbarLeft.vue";
-import NavbarTop from "./components/NavbarTop.vue";
+<script setup lang="ts">
+import { darkTheme, NConfigProvider } from "naive-ui";
+import CollapsileNavbarVue from "./components/CollapsileNavbar.vue";
+import routerContainerVue from "./core/router-container.vue";
 
-export default {
-	name: "App",
-	components: {
-		NavbarTop,
-		NavbarLeft,
-	},
-};
+const navbarItems = [
+  {
+    id: 1,
+    name: "Home",
+    url: "/",
+  },
+  {
+    id: 2,
+    name: "About",
+    url: "/about",
+  },
+  {
+    id: 3,
+    name: "Contact",
+    url: "/contact",
+  },
+  {
+    id: 4,
+    name: "Products",
+    url: "/products",
+  },
+];
 </script>
-
-<style>
-:root {
-	--element-spacing: 0.5rem;
-}
-
-.view-container {
-	display: flex;
-	flex-direction: row;
-}
-</style>

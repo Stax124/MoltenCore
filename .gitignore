@@ -32,6 +32,7 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
+/yarn-error.log
 
 frontend/node_modules
 frontend/*.local

@@ -15,5 +15,5 @@ async def config():
 
 
 @router.get("/commands")
-async def bot():
-    return shared.bot.all_commands.__str__()
+async def commands():
+    return list(shared.bot.all_commands).__str__()

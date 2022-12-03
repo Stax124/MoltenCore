@@ -60,7 +60,8 @@ class Owner(commands.Cog):
     async def exec(self, ctx: Context, *, message: str):
         if self.bot.enable_rce:
             try:
-                await ctx.send(exec(message))
+                exec(message)
+                await ctx.send("Success")
             except Exception as e:
                 await ctx.send(e.__str__())
         else:

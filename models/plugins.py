@@ -18,7 +18,8 @@ class PluginPermissions(SQLModel, table=True):
             Integer(),
             default=PluginPermission.NOT_REQUIRED,
             server_default=PluginPermission.NOT_REQUIRED.__str__(),
-        ), default=PluginPermission.NOT_REQUIRED
+        ),
+        default=PluginPermission.NOT_REQUIRED,
     )
 
 
