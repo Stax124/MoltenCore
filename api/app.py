@@ -22,12 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(config.router, prefix="/config")
-app.include_router(guild.router, prefix="/guilds")
-app.include_router(plugins.router, prefix="/plugins")
-app.include_router(extensions.router, prefix="/extensions")
-app.include_router(system.router, prefix="/system")
-app.include_router(bot.router, prefix="/bot")
+app.include_router(config.router, prefix="/api/config")
+app.include_router(guild.router, prefix="/api/guilds")
+app.include_router(plugins.router, prefix="/api/plugins")
+app.include_router(extensions.router, prefix="/api/extensions")
+app.include_router(system.router, prefix="/api/system")
+app.include_router(bot.router, prefix="/api/bot")
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 

@@ -1,86 +1,78 @@
 <template>
-  <nav class="vertical-nav">
-    <ul>
-      <li v-for="item in items" :key="item.id">
-        <a :href="item.url" class="nav-toplevel">{{ item.name }}</a>
-        <ul v-if="item.children">
-          <li v-for="child in item.children" :key="child.id">
-            <a :href="child.url">{{ child.name }}</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
+  <div class="navbar">
+    <n-layout style="height: 100%" has-sider>
+      <n-layout-sider
+        bordered
+        collapse-mode="width"
+        :collapsed-width="64"
+        :width="240"
+        :collapsed="collapsed"
+        @collapse="collapsed = true"
+        @expand="collapsed = false"
+        style="height: 100%"
+      >
+        <n-menu
+          :collapsed="collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"
+          :options="menuOptions"
+          style="height: 100%"
+        />
+      </n-layout-sider>
+    </n-layout>
+  </div>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
+<script lang="ts" setup>
+import {
+  ExtensionPuzzle,
+  Home,
+  InformationCircle,
+  StatsChart,
+} from "@vicons/ionicons5";
+import type { MenuOption } from "naive-ui";
+import { NIcon, NLayout, NLayoutSider, NMenu } from "naive-ui";
+import type { Component } from "vue";
+import { h, ref } from "vue";
+import { RouterLink } from "vue-router";
 
-interface Item {
-  id: number;
-  name: string;
-  url: string;
-  children?: Item[];
+function renderIcon(icon: Component) {
+  return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-export default {
-  name: "VerticalNav",
-  props: {
-    items: {
-      type: Array as PropType<Item[]>,
-      required: true,
-    },
+const menuOptions: MenuOption[] = [
+  {
+    label: () => h(RouterLink, { to: "/" }, { default: () => "Home" }),
+    key: "home",
+    icon: renderIcon(Home),
   },
-};
+  {
+    label: () =>
+      h(RouterLink, { to: "/plugins" }, { default: () => "Plugins" }),
+    key: "plugins",
+    icon: renderIcon(ExtensionPuzzle),
+  },
+  {
+    label: () => h(RouterLink, { to: "/stats" }, { default: () => "Stats" }),
+    key: "stats",
+    icon: renderIcon(StatsChart),
+  },
+  {
+    label: () => h(RouterLink, { to: "/about" }, { default: () => "About" }),
+    key: "about",
+    icon: renderIcon(InformationCircle),
+  },
+];
+
+let collapsed = ref(true);
 </script>
 
 <style>
-.vertical-nav {
-  /* Set the width and height of the navigation bar */
-  width: 200px;
-  height: 100%;
-
-  /* Add a background color and some padding */
-  padding: 20px;
-
-  /* Green box around it */
-  border-right: 1px solid #109f7e;
-
+.navbar {
   position: fixed;
   top: 0;
   left: 0;
-
-  overflow: hidden;
-
-  z-index: 1;
-}
-
-.vertical-nav ul {
-  /* Reset the default list styles */
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.vertical-nav a {
-  /* Add some styles for the navigation links */
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 450;
-}
-
-.vertical-nav li {
-  margin: 5px 0px;
-}
-
-.vertical-nav .nav-toplevel {
-  /* Add some styles for the top-level navigation links */
-  display: block;
-  padding: 10px 3px;
-}
-
-.vertical-nav .nav-toplevel:hover {
-  border-radius: 8px;
-  border: 1px;
+  height: 100%;
+  z-index: 1000;
 }
 </style>

@@ -1,35 +1,20 @@
 <template>
-  <CollapsileNavbarVue :items="navbarItems" />
   <NConfigProvider :theme="darkTheme">
-    <routerContainerVue />
+    <NMessageProvider>
+      <CollapsileNavbarVue />
+      <routerContainerVue />
+      <NBackTop :right="100" />
+    </NMessageProvider>
   </NConfigProvider>
 </template>
 
 <script setup lang="ts">
-import { darkTheme, NConfigProvider } from "naive-ui";
+import {
+  darkTheme,
+  NBackTop,
+  NConfigProvider,
+  NMessageProvider,
+} from "naive-ui";
 import CollapsileNavbarVue from "./components/CollapsileNavbar.vue";
 import routerContainerVue from "./core/router-container.vue";
-
-const navbarItems = [
-  {
-    id: 1,
-    name: "Home",
-    url: "/",
-  },
-  {
-    id: 2,
-    name: "About",
-    url: "/about",
-  },
-  {
-    id: 3,
-    name: "Contact",
-    url: "/contact",
-  },
-  {
-    id: 4,
-    name: "Products",
-    url: "/products",
-  },
-];
 </script>
