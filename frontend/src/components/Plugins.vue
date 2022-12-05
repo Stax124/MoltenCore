@@ -3,20 +3,15 @@
   <n-data-table
     :columns="columnsRef"
     :data="dataRef"
-    :pagination="false"
+    :pagination="pagination"
     :bordered="false"
   />
-  <NButton @click="updateData">Update</NButton>
 </template>
 
 <script lang="ts" setup>
-import {
-  NButton,
-  NDataTable,
-  useMessage,
-  type DataTableColumns,
-} from "naive-ui";
-import { reactive } from "vue";
+import { NButton, NDataTable, type DataTableColumns } from "naive-ui";
+import type { Type as ButtonType } from "naive-ui/es/button/src/interface";
+import { h, reactive } from "vue";
 
 type Plugin = {
   id: number;
@@ -34,79 +29,150 @@ type Plugin = {
   empty: boolean;
 };
 
-const data: Plugin[] = [
-  {
-    enabled: true,
-    traceback: "Traceback",
-    short_traceback: "Traceback",
-    author: "Author",
-    stars: 1,
-    empty: false,
-    exists: true,
-    forks: 1,
-    id: 1,
-    issues: 1,
-    license: "MIT",
-    name: "Name",
-    repo_url: "",
-  },
-  {
-    enabled: true,
-    traceback: "Traceback",
-    short_traceback: "Traceback",
-    author: "Author",
-    stars: 1,
-    empty: false,
-    exists: true,
-    forks: 1,
-    id: 1,
-    issues: 1,
-    license: "MIT",
-    name: "Name",
-    repo_url: "",
-  },
-];
+const data: Plugin[] = [];
 
-const message = useMessage();
+async function updateData() {
+  const plugin_names = await (
+    await fetch("http://localhost:8080/api/plugins")
+  ).json();
 
-function updateData() {
-  message.info("Updating data");
-  dataRef[0].name = "New Name";
+  dataRef.splice(0, dataRef.length);
+
+  for (const plugin_name of plugin_names) {
+    const plugin = await (
+      await fetch(`http://localhost:8080/api/plugins/status/${plugin_name}`)
+    ).json();
+    dataRef.push(plugin);
+  }
 }
 
-const createColumns2 = (): DataTableColumns => [
+const createColumns2 = ({
+  openGitHub,
+  togglePlugin,
+  getStatusButtonType,
+  getStatusText,
+}: {
+  openGitHub: (row: Plugin) => void;
+  togglePlugin: (row: Plugin) => void;
+  getStatusButtonType: (row: Plugin) => ButtonType;
+  getStatusText: (row: Plugin) => string;
+}): DataTableColumns<Plugin> => [
   {
     title: "Name",
     key: "name",
+    sorter: "default",
   },
   {
     title: "Author",
     key: "author",
+    sorter: "default",
   },
   {
-    title: "Stars",
-    key: "stars",
-  },
-  {
-    title: "Forks",
-    key: "forks",
-  },
-  {
-    title: "Issues",
-    key: "issues",
-  },
-  {
-    title: "License",
-    key: "license",
+    title: "GitHub",
+    key: "repo_url",
+    render(row) {
+      return h(
+        NButton,
+        {
+          type: "info",
+          bordered: true,
+          secondary: true,
+          onClick: () => openGitHub(row),
+          target: "_blank",
+        },
+        { default: () => "GitHub" }
+      );
+    },
+    filter: "default",
   },
   {
     title: "Enabled",
     key: "enabled",
+    render(row) {
+      return h(
+        NButton,
+        {
+          type: row.enabled ? "success" : "error",
+          bordered: true,
+          secondary: true,
+          block: true,
+          strong: true,
+          onClick: () => togglePlugin(row),
+        },
+        { default: () => (row.enabled ? "Enabled" : "Disabled") }
+      );
+    },
+  },
+  {
+    title: "Status",
+    key: "status",
+    render(row) {
+      return h(
+        NButton,
+        {
+          type: getStatusButtonType(row),
+          bordered: true,
+          secondary: true,
+          block: true,
+          style: "cursor: not-allowed",
+        },
+        { default: () => getStatusText(row) }
+      );
+    },
+    filter: "default",
   },
 ];
 
-let columns = createColumns2();
+let columns = createColumns2({
+  openGitHub(row: Plugin) {
+    window.open(row.repo_url);
+  },
+  togglePlugin(row: Plugin) {
+    if (row.enabled) {
+      fetch(`http://localhost:8080/api/plugins/disable-plugin/${row.name}`, {
+        method: "POST",
+      });
+    } else {
+      fetch(`http://localhost:8080/api/plugins/enable-plugin/${row.name}`, {
+        method: "POST",
+      });
+    }
+
+    fetch(`http://localhost:8080/api/plugins/status/${row.name}`)
+      .then((res) => res.json())
+      .then((plugin: Plugin) => {
+        const index = dataRef.findIndex((p) => p.name === plugin.name);
+        dataRef.splice(index, 1, plugin);
+      });
+  },
+  getStatusButtonType(row: Plugin) {
+    if (row.empty) {
+      return "error";
+    } else if (row.exists) {
+      return "success";
+    } else {
+      return "warning";
+    }
+  },
+  getStatusText(row: Plugin) {
+    if (row.empty) {
+      return "Empty";
+    } else if (row.exists) {
+      return "Exists";
+    } else {
+      return "Missing";
+    }
+  },
+});
 
 const columnsRef = reactive(columns);
 const dataRef = reactive(data);
+const pagination = reactive({ pageSize: 10 });
+updateData();
 </script>
+
+<style>
+/* .xxx {
+  cursor: ;
+} */
+</style>

@@ -2,6 +2,7 @@
   <NConfigProvider :theme="darkTheme">
     <NMessageProvider>
       <CollapsileNavbarVue />
+      <TopBarVue />
       <routerContainerVue />
       <NBackTop :right="100" />
     </NMessageProvider>
@@ -16,5 +17,6 @@ import {
   NMessageProvider,
 } from "naive-ui";
 import CollapsileNavbarVue from "./components/CollapsileNavbar.vue";
+import TopBarVue from "./components/icons/TopBar.vue";
 import routerContainerVue from "./core/router-container.vue";
 </script>

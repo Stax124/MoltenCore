@@ -20,7 +20,7 @@ async def plugins():
     return [i for i in bot.plugins]
 
 
-@router.get("/enable-plugin/{plugin}")
+@router.post("/enable-plugin/{plugin}")
 async def enable_plugin(plugin: str):
     if bot.plugins[plugin]:
         await bot.plugins[plugin].enable(False)
@@ -29,7 +29,7 @@ async def enable_plugin(plugin: str):
         raise HTTPException(status_code=404, detail="Plugin not found")
 
 
-@router.get("/disable-plugin/{plugin}")
+@router.post("/disable-plugin/{plugin}")
 async def disable_plugin(plugin: str):
     if bot.plugins[plugin]:
         await bot.plugins[plugin].disable(False)
