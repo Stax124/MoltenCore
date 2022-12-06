@@ -16,5 +16,23 @@ services:
     ports:
       - "5432:5432"
 
+  bot:
+    image: modular:latest
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+    healthcheck:
+      test: curl --fail http://localhost:8080/api/system/healthy || exit 1
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    container_name: modular-bot
+    volumes:
+      - ./compose-alembic.ini:/usr/src/app/alembic.ini
+
 volumes:
   db_data: {}

@@ -4,6 +4,8 @@ import os
 import subprocess
 from threading import Thread
 
+from sqlmodel import SQLModel
+
 from fastapi import FastAPI
 from sqlmodel.sql.expression import Select, SelectOfScalar
 from uvicorn import run as uvicorn_run
@@ -33,8 +35,13 @@ def main():
     )
     parser.add_argument("-f", "--file", type=str, help="Filename for logging")
     parser.add_argument(
+        "--disable-virtualenv-check",
+        action="store_true",
+        help="Run without virtualenv check",
+    )
+    parser.add_argument(
         "--token",
-        default=os.environ.get("TRINITY"),
+        default=os.environ.get("DISCORD_BOT_TOKEN"),
         type=str,
         help="Discord API token: Get yours at https://discord.com/developers/applications",
     )
@@ -89,7 +96,7 @@ def main():
         exit(1)
 
     # Quit if not in virtualenv
-    if not is_in_virtualenv():
+    if not args.disable_virtualenv_check and not is_in_virtualenv():
         logging.error(
             "For security and portability reasons, this bot should only be used in a virtualenv, please create one and run this script again"
         )
@@ -117,4 +124,10 @@ def main():
 
 
 if __name__ == "__main__":
+    from db import generate_engine
+
+    # Create all tables that are not present, further migrations are handled by alembic
+    engine = generate_engine()
+    SQLModel.metadata.create_all(engine)
+
     main()

@@ -8,6 +8,7 @@ pyrightconfig.json
 
 # Exclude frontend, will be imported with DOCKERFILE
 frontend/
+!frontend/dist
 
 # Database
 alembic.ini

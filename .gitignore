@@ -1,10 +1,6 @@
 # Database
 alembic.ini
 migrations/versions/
-db.sqlite3
-
-# Linters
-pyrightconfig.json
 
 # Plugins
 ./plugins/
@@ -34,21 +30,9 @@ frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 /yarn-error.log
 
+# Frontend node modules
 frontend/node_modules
-frontend/*.local
-
-# Editor directories and files
-**/.vscode
-frontend/!.vscode/extensions.json
-frontend/.idea
-frontend/.DS_Store
-frontend/*.suo
-frontend/*.ntvs*
-frontend/*.njsproj
-frontend/*.sln
-frontend/*.sw?
 
 # Docs
-doxygen/
 **/**/node_modules
 docs/.vuepress

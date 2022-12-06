@@ -80,3 +80,8 @@ async def status():
         }
     else:
         return HTTPException(status_code=503, detail="Config not found in database")
+
+
+@router.get("/healthy")
+async def healthy():
+    return {"status": "ok"}

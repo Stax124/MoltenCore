@@ -16,7 +16,7 @@ class Config(SQLModel, table=True):
         sa_column=Column(
             Integer, nullable=False, server_default=str(ActivityType.listening.value)
         ),
-        default=ActivityType.listening,
+        default=ActivityType.listening.value,
     )
     paused: bool = Field(
         sa_column=Column(Boolean(), default=False, server_default="0", nullable=False),
