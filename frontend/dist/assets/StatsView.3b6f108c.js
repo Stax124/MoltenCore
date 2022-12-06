@@ -1,0 +1,1 @@
+import{_ as n,o as e,c as s,d as a,b as r}from"./index.4827ed2b.js";const _={};function o(t,c){return e(),s("p",null,"Stats")}const p=n(_,[["render",o]]),m=a({__name:"StatsView",setup(t){return(c,f)=>(e(),r(p))}});export{m as default};
