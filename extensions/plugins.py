@@ -1,10 +1,9 @@
-import re
-
 import discord
 from discord.ext import commands
 from discord.ext.commands.context import Context
 
 from core.bot.bot import ModularBot
+from core.plugins.plugin import Plugin
 from core.structures.embed import ModularEmbed, ModularEmbedList
 
 
@@ -34,7 +33,7 @@ class Plugins(commands.Cog):
     @commands.hybrid_command(name="plugin", help="Show plugin details")
     @commands.is_owner()
     async def plugin(self, ctx: Context, *, plugin_name: str):
-        plugin = self.bot.plugins[plugin_name]
+        plugin: Plugin = self.bot.plugins[plugin_name]
         if not plugin:
             await ctx.send(
                 embed=discord.Embed(title="Plugin not found", color=0xFF0000)
@@ -63,7 +62,7 @@ class Plugins(commands.Cog):
     @commands.hybrid_command(name="enable-plugin", help="Enable certain plugin")
     @commands.is_owner()
     async def enable_plugin(self, ctx: Context, *, plugin_name: str):
-        plugin = self.bot.plugins[plugin_name]
+        plugin: Plugin = self.bot.plugins[plugin_name]
         if not plugin:
             await ctx.send(
                 embed=discord.Embed(title="Plugin not found", color=0xFF0000)
@@ -85,7 +84,7 @@ class Plugins(commands.Cog):
     @commands.hybrid_command(name="disable-plugin", help="Disable certain plugin")
     @commands.is_owner()
     async def disable_plugin(self, ctx: Context, *, plugin_name: str):
-        plugin = self.bot.plugins[plugin_name]
+        plugin: Plugin = self.bot.plugins[plugin_name]
         if not plugin:
             await ctx.send(
                 embed=discord.Embed(title="Plugin not found", color=0xFF0000)

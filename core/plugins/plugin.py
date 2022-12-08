@@ -248,6 +248,8 @@ class Plugin:
         if load:
             await self.load()
 
+        await self.bot.sync()
+
     async def disable(self, unload: bool) -> None:
         "Marks this plugin as disabled, it will take a reload to apply changes"
 
@@ -258,6 +260,8 @@ class Plugin:
 
         if unload:
             await self.unload()
+
+        await self.bot.sync()
 
     def update(self):
         "Resets current repository and updates the plugin files"

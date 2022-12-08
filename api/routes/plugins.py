@@ -1,6 +1,7 @@
 from core.shared import bot
 from db import generate_engine, get_session
 from fastapi import APIRouter, HTTPException
+from api.queue import run_async
 
 router = APIRouter(tags=["plugins"])
 engine = generate_engine()
@@ -23,7 +24,7 @@ async def plugins():
 @router.post("/enable-plugin/{plugin}")
 async def enable_plugin(plugin: str):
     if bot.plugins[plugin]:
-        await bot.plugins[plugin].enable(False)
+        await run_async(bot.plugins[plugin].enable(load=True))
         return bot.plugins[plugin].to_dict()
     else:
         raise HTTPException(status_code=404, detail="Plugin not found")
@@ -32,7 +33,7 @@ async def enable_plugin(plugin: str):
 @router.post("/disable-plugin/{plugin}")
 async def disable_plugin(plugin: str):
     if bot.plugins[plugin]:
-        await bot.plugins[plugin].disable(False)
+        await run_async(bot.plugins[plugin].disable(unload=True))
         return bot.plugins[plugin].to_dict()
     else:
         raise HTTPException(status_code=404, detail="Plugin not found")

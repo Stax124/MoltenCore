@@ -32,15 +32,13 @@ type Plugin = {
 const data: Plugin[] = [];
 
 async function updateData() {
-  const plugin_names = await (
-    await fetch("http://localhost:8080/api/plugins")
-  ).json();
+  const plugin_names = await (await fetch("/api/plugins")).json();
 
   dataRef.splice(0, dataRef.length);
 
   for (const plugin_name of plugin_names) {
     const plugin = await (
-      await fetch(`http://localhost:8080/api/plugins/status/${plugin_name}`)
+      await fetch(`/api/plugins/status/${plugin_name}`)
     ).json();
     dataRef.push(plugin);
   }
@@ -129,16 +127,16 @@ let columns = createColumns2({
   },
   togglePlugin(row: Plugin) {
     if (row.enabled) {
-      fetch(`http://localhost:8080/api/plugins/disable-plugin/${row.name}`, {
+      fetch(`/api/plugins/disable-plugin/${row.name}`, {
         method: "POST",
       });
     } else {
-      fetch(`http://localhost:8080/api/plugins/enable-plugin/${row.name}`, {
+      fetch(`/api/plugins/enable-plugin/${row.name}`, {
         method: "POST",
       });
     }
 
-    fetch(`http://localhost:8080/api/plugins/status/${row.name}`)
+    fetch(`/api/plugins/status/${row.name}`)
       .then((res) => res.json())
       .then((plugin: Plugin) => {
         const index = dataRef.findIndex((p) => p.name === plugin.name);

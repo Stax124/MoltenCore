@@ -9,11 +9,16 @@ from discord.ext import commands
 from discord.ext.commands import AutoShardedBot
 from models.config import Config
 from models.guild import Guild
+from core.queue import Queue, Status as QueueStatus
 from pretty_help import PrettyHelp
 from sqlmodel import Session, select
+from discord.ext.tasks import loop
 
 from core.plugins.plugin import Plugin
 from core.plugins.plugin_handler import PluginHandler
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
@@ -57,13 +62,34 @@ class ModularBot(AutoShardedBot):
         self.plugins: dict[str, Plugin] = {}
         self.plugin_handler: PluginHandler = PluginHandler(self)
         if self.disable_plugins:
-            logging.warning("Plugins are disabled")
+            logger.warning("Plugins are disabled")
 
         # RCE
         self.enable_rce: bool = enable_rce
 
+        self.queue: Queue = Queue()
+
     async def sync(self):
         await self.tree.sync()
+
+    @loop(seconds=1)
+    async def queue_task(self):
+        for _id in self.queue.tasks:
+            task = self.queue.get(_id)
+
+            if task.status == QueueStatus.waiting:
+                logger.debug(f"Found task {_id}")
+
+                task.status = QueueStatus.in_progress
+                try:
+                    logger.debug(f"Running task {_id}")
+                    task.run()
+                    logger.debug(f"Task {_id} finished")
+                    task.status = QueueStatus.resolved
+                except Exception as e:
+                    logger.error(f"Task {_id} failed")
+                    logger.error(e)
+                    task.status = QueueStatus.error
 
     def run(
         self,
@@ -157,28 +183,32 @@ class ModularBot(AutoShardedBot):
         config = self.database.exec(select(Config)).first()
 
         if not config:
-            logging.warning("No config found, creating one")
+            logger.warning("No config found, creating one")
             self.database.add(Config())
             self.database.commit()
-            logging.info("Config created")
+            logger.info("Config created")
 
     async def async_init(self):
+
+        # Start the queue loop
+        self.queue_task.start()
+
         # Load core extension
         await self.load_extension("extensions.core")
 
         # Load plugins if enabled
         if not self.disable_plugins:
             self.plugin_handler.populate_plugins()
-            logging.info(f"Plugins: {self.plugins}")
+            logger.info(f"Plugins: {self.plugins}")
             self.plugin_handler.install_requirements()
             await self.plugin_handler.load_all_plugins()
         else:
-            logging.warning("Plugins are disabled")
+            logger.warning("Plugins are disabled")
 
     @property
     def avatar_url(self):
         if self.user and self.user.avatar:
             return self.user.avatar.url
         else:
-            logging.debug("No avatar found")
+            logger.debug("No avatar found")
             return ""

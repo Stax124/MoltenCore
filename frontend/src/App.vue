@@ -17,6 +17,6 @@ import {
   NMessageProvider,
 } from "naive-ui";
 import CollapsileNavbarVue from "./components/CollapsileNavbar.vue";
-import TopBarVue from "./components/icons/TopBar.vue";
+import TopBarVue from "./components/TopBar.vue";
 import routerContainerVue from "./core/router-container.vue";
 </script>

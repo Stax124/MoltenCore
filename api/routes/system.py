@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional
 import discord
 from fastapi import APIRouter, HTTPException
@@ -5,6 +6,7 @@ from sqlmodel import select
 from core.shared import bot
 from db import generate_engine, get_session
 from models.config import Config
+from api.queue import run_async
 
 router = APIRouter(tags=["system"])
 engine = generate_engine()
@@ -13,19 +15,20 @@ db = get_session(engine)
 
 @router.post("/sync-slash-commands")
 async def sync_slash_commands():
-    await bot.sync()
-    return {"status": "ok"}
+    return await run_async(bot.sync())
 
 
 @router.post(
     "/pause",
     responses={
-        200: {"description": "Returns the bot status"},
+        200: {
+            "description": "Pauses the bot from responding to commands from non-owner users"
+        },
         503: {"description": "Config not found in database"},
     },
 )
 async def pause():
-    config: Optional[Config] = bot.database.query(Config).first()
+    config: Optional[Config] = db.exec(select(Config)).first()
 
     if config:
         config.paused = True
@@ -42,7 +45,7 @@ async def pause():
 @router.post(
     "/unpause",
     responses={
-        200: {"description": "Returns the bot status"},
+        200: {"description": "Resumes the normal operation of the bot"},
         503: {"description": "Config not found in database"},
     },
 )
