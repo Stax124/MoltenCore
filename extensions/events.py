@@ -6,9 +6,9 @@ import discord
 from discord.errors import NotFound
 from discord.ext import commands
 from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
+from discord.ext.commands import CommandError, Context
 
 from core.bot.bot import ModularBot
-from core.structures.embed import ModularEmbedList
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +22,9 @@ class Events(commands.Cog):
                     await bot.process_commands(message)
 
         @bot.event
-        async def on_command_error(ctx, error):
+        async def on_command_error(self, ctx: Context, error: CommandError):
             logger.debug(f"Error occured: {error}")
+
             if isinstance(error, CommandNotFound):
                 embed = discord.Embed(
                     colour=0xFF0000, description=f"❌ Command not found"
@@ -42,6 +43,11 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
                 pass
             else:
+                if ctx.command:
+                    command_name = ctx.command.name
+                    # If the error has already been encountered, increment the error count
+                    bot.errors.add(command_name)
+
                 logger.debug("Error not catched, raising")
                 raise error
 

@@ -1,7 +1,7 @@
 <template>
   <NSpace justify="end" inline align="center" class="top-bar">
     <NButton
-      :type="syncType"
+      :type="(syncState.$state.syncState as ButtonType)"
       ghost
       icon-placement="left"
       :render-icon="syncIcon"
@@ -9,17 +9,23 @@
       :loading="syncLoading"
       >Sync</NButton
     >
-    <NAvatar src="/api/bot/icon" size="large" circle class="logo" />
+    <NAvatar
+      src="http://localhost:8080/api/bot/icon"
+      size="large"
+      circle
+      class="logo"
+    />
   </NSpace>
 </template>
 
 <script lang="ts" setup>
+import { useSyncState } from "@/store/syncState";
 import { SyncSharp } from "@vicons/ionicons5";
 import { NAvatar, NButton, NSpace } from "naive-ui";
 import type { Type as ButtonType } from "naive-ui/es/button/src/interface";
 import { h, ref } from "vue";
 
-let syncType: ButtonType = "primary";
+const syncState = useSyncState();
 
 const syncLoading = ref(false);
 const syncIcon = () => {
@@ -28,12 +34,18 @@ const syncIcon = () => {
 
 async function sync() {
   syncLoading.value = true;
-  await fetch("/api/system/sync-slash-commands", {
+  await fetch("http://localhost:8080/api/system/sync-slash-commands", {
     method: "POST",
-  }).catch(() => {
-    syncLoading.value = false;
-    syncType = "error";
-  });
+  })
+    .catch((e) => {
+      console.log(e);
+      syncLoading.value = false;
+      syncState.setError();
+    })
+    .then(() => {
+      syncLoading.value = false;
+      syncState.clearSync();
+    });
   syncLoading.value = false;
 }
 </script>

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from api.routes import config, guild, plugins, extensions, system, bot
+from api.routes import config, guild, notifications, plugins, extensions, system, bot
 
 logger = logging.getLogger(__name__)
 origins = [
@@ -28,6 +28,7 @@ app.include_router(plugins.router, prefix="/api/plugins")
 app.include_router(extensions.router, prefix="/api/extensions")
 app.include_router(system.router, prefix="/api/system")
 app.include_router(bot.router, prefix="/api/bot")
+app.include_router(notifications.router, prefix="/api/errors")
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 

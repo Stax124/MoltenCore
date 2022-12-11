@@ -244,11 +244,10 @@ class Plugin:
         self.bot.database.query(PluginData).filter_by(id=self.id).update(
             {PluginData.enabled: True}
         )
+        self.bot.database.commit()
 
         if load:
             await self.load()
-
-        await self.bot.sync()
 
     async def disable(self, unload: bool) -> None:
         "Marks this plugin as disabled, it will take a reload to apply changes"
@@ -257,11 +256,10 @@ class Plugin:
         self.bot.database.query(PluginData).filter_by(id=self.id).update(
             {PluginData.enabled: False}
         )
+        self.bot.database.commit()
 
         if unload:
             await self.unload()
-
-        await self.bot.sync()
 
     def update(self):
         "Resets current repository and updates the plugin files"

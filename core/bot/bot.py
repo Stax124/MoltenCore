@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 
 import discord
+from core.errors import Errors
 from db import generate_engine, get_session
 from discord import utils
 from discord.ext import commands
@@ -13,6 +14,7 @@ from core.queue import Queue, Status as QueueStatus
 from pretty_help import PrettyHelp
 from sqlmodel import Session, select
 from discord.ext.tasks import loop
+from core.notifications import NotificationQueue
 
 from core.plugins.plugin import Plugin
 from core.plugins.plugin_handler import PluginHandler
@@ -68,6 +70,8 @@ class ModularBot(AutoShardedBot):
         self.enable_rce: bool = enable_rce
 
         self.queue: Queue = Queue()
+        self.notification_queue: NotificationQueue = NotificationQueue()
+        self.errors = Errors()
 
     async def sync(self):
         await self.tree.sync()
