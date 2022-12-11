@@ -46,7 +46,7 @@ class Events(commands.Cog):
                 if ctx.command:
                     command_name = ctx.command.name
                     # If the error has already been encountered, increment the error count
-                    bot.errors.add(command_name)
+                    bot.errors.add(name=command_name, ctx=ctx)
 
                 logger.debug("Error not catched, raising")
                 raise error

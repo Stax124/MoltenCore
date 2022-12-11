@@ -1,8 +1,8 @@
-import asyncio
 from typing import Optional
 import discord
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
+from core.functions.functions import convert_timedelta
 from core.shared import bot
 from db import generate_engine, get_session
 from models.config import Config
@@ -85,6 +85,11 @@ async def status():
         return HTTPException(status_code=503, detail="Config not found in database")
 
 
+@router.get("/uptime")
+async def uptime() -> str:
+    return convert_timedelta(bot.uptime)
+
+
 @router.get("/healthy")
-async def healthy():
+async def healthy() -> dict[str, str]:
     return {"status": "ok"}

@@ -1,21 +1,30 @@
-from discord.ext.commands import CommandError
 import enum
+from datetime import datetime
 
 
 class NotificationSeverity(enum.Enum):
-    MESSAGE = enum.auto()
-    ERROR = enum.auto()
-    WARNING = enum.auto()
+    MESSAGE = "message"
+    ERROR = "error"
+    WARNING = "warning"
 
 
 class Notification:
     def __init__(self, title: str, text: str, severity: NotificationSeverity) -> None:
-        self.title = title
-        self.text = text
-        self.severity = severity
+        self.title: str = title
+        self.text: str = text
+        self.severity: NotificationSeverity = severity
+        self.timestamp: datetime = datetime.now()
 
     def __str__(self) -> str:
         return f"{self.title}: {self.text}"
+
+    def to_json(self) -> dict:
+        return {
+            "title": self.title,
+            "text": self.text,
+            "severity": self.severity.value,
+            "timestamp": self.timestamp.isoformat(),
+        }
 
 
 class NotificationQueue:

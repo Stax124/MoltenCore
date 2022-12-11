@@ -1,13 +1,12 @@
-from core.notifications import Notification
 from core.shared import bot
 from fastapi import APIRouter
 
-router = APIRouter(tags=["errors"])
+router = APIRouter(tags=["notifications"])
 
 
 @router.get("/")
-async def notifications() -> list[Notification]:
-    return bot.notification_queue.notifications
+async def notifications():
+    return [i.to_json() for i in bot.notification_queue.notifications]
 
 
 @router.get("/clear")

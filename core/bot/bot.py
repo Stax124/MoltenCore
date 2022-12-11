@@ -15,7 +15,7 @@ from pretty_help import PrettyHelp
 from sqlmodel import Session, select
 from discord.ext.tasks import loop
 from core.notifications import NotificationQueue
-
+from datetime import datetime
 from core.plugins.plugin import Plugin
 from core.plugins.plugin_handler import PluginHandler
 
@@ -52,6 +52,8 @@ class ModularBot(AutoShardedBot):
             intents=discord.Intents.all(),
         )
 
+        self.up_since: datetime = datetime.now()
+
         # Set up database
         self.engine = generate_engine(verbose=verbose_database)
         self.database: Session = get_session(self.engine)
@@ -75,6 +77,10 @@ class ModularBot(AutoShardedBot):
 
     async def sync(self):
         await self.tree.sync()
+
+    @property
+    def uptime(self):
+        return datetime.now() - self.up_since
 
     @loop(seconds=1)
     async def queue_task(self):

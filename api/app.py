@@ -28,7 +28,7 @@ app.include_router(plugins.router, prefix="/api/plugins")
 app.include_router(extensions.router, prefix="/api/extensions")
 app.include_router(system.router, prefix="/api/system")
 app.include_router(bot.router, prefix="/api/bot")
-app.include_router(notifications.router, prefix="/api/errors")
+app.include_router(notifications.router, prefix="/api/notifications")
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 
