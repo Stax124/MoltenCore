@@ -1,19 +1,23 @@
-import enum
+from typing import Literal
 from datetime import datetime
 
-
-class NotificationSeverity(enum.Enum):
-    MESSAGE = "message"
-    ERROR = "error"
-    WARNING = "warning"
+from core.websockets.data import Data
 
 
 class Notification:
-    def __init__(self, title: str, text: str, severity: NotificationSeverity) -> None:
+    def __init__(
+        self,
+        title: str,
+        text: str,
+        severity: Literal["error", "info", "success", "warning"],
+        timeout: int = 3000,
+    ) -> None:
         self.title: str = title
         self.text: str = text
-        self.severity: NotificationSeverity = severity
+        self.severity: Literal["error", "info", "success", "warning"] = severity
         self.timestamp: datetime = datetime.now()
+        self.id: int = hash(self)
+        self.timeout = timeout
 
     def __str__(self) -> str:
         return f"{self.title}: {self.text}"
@@ -21,10 +25,15 @@ class Notification:
     def to_json(self) -> dict:
         return {
             "title": self.title,
-            "text": self.text,
-            "severity": self.severity.value,
+            "message": self.text,
+            "severity": self.severity,
+            "timeout": self.timeout,
             "timestamp": self.timestamp.isoformat(),
+            "id": self.id,
         }
+
+    def to_data(self):
+        return Data(type="notification", data=self.to_json())
 
 
 class NotificationQueue:

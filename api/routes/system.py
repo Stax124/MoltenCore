@@ -4,13 +4,10 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 from core.functions.functions import convert_timedelta
 from core.shared import bot
-from db import generate_engine, get_session
 from models.config import Config
 from api.queue import run_async
 
 router = APIRouter(tags=["system"])
-engine = generate_engine()
-db = get_session(engine)
 
 
 @router.post("/sync-slash-commands")
@@ -28,7 +25,7 @@ async def sync_slash_commands():
     },
 )
 async def pause():
-    config: Optional[Config] = db.exec(select(Config)).first()
+    config: Optional[Config] = bot.database.exec(select(Config)).first()
 
     if config:
         config.paused = True
@@ -50,7 +47,7 @@ async def pause():
     },
 )
 async def unpause():
-    config: Optional[Config] = db.exec(select(Config)).first()
+    config: Optional[Config] = bot.database.exec(select(Config)).first()
 
     if config:
         config.paused = False
@@ -74,7 +71,7 @@ async def unpause():
     },
 )
 async def status():
-    config: Optional[Config] = db.exec(select(Config)).first()
+    config: Optional[Config] = bot.database.exec(select(Config)).first()
 
     if config:
         return {

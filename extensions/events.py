@@ -22,7 +22,7 @@ class Events(commands.Cog):
                     await bot.process_commands(message)
 
         @bot.event
-        async def on_command_error(self, ctx: Context, error: CommandError):
+        async def on_command_error(ctx: Context, error: CommandError):
             logger.debug(f"Error occured: {error}")
 
             if isinstance(error, CommandNotFound):

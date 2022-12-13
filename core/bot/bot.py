@@ -4,6 +4,7 @@ from typing import Optional
 
 import discord
 from core.errors import Errors
+from core.websockets.manager import WebSocketManager
 from db import generate_engine, get_session
 from discord import utils
 from discord.ext import commands
@@ -18,6 +19,7 @@ from core.notifications import NotificationQueue
 from datetime import datetime
 from core.plugins.plugin import Plugin
 from core.plugins.plugin_handler import PluginHandler
+from fastapi import WebSocket
 
 
 logger = logging.getLogger(__name__)
@@ -75,6 +77,8 @@ class ModularBot(AutoShardedBot):
         self.notification_queue: NotificationQueue = NotificationQueue()
         self.errors = Errors()
 
+        self.websocket: WebSocketManager = WebSocketManager()
+
     async def sync(self):
         await self.tree.sync()
 
@@ -82,7 +86,7 @@ class ModularBot(AutoShardedBot):
     def uptime(self):
         return datetime.now() - self.up_since
 
-    @loop(seconds=1)
+    @loop(seconds=0.2)
     async def queue_task(self):
         for _id in self.queue.tasks:
             task = self.queue.get(_id)

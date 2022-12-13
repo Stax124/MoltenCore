@@ -1,22 +1,29 @@
 <template>
-  <NConfigProvider :theme="darkTheme">
-    <NMessageProvider>
-      <CollapsileNavbarVue />
-      <TopBarVue />
-      <routerContainerVue />
-      <NBackTop :right="100" />
-    </NMessageProvider>
+  <NConfigProvider :theme="darkTheme" :theme-overrides="themeOverrides">
+    <NNotificationProvider placement="bottom-right">
+      <WebSocketHandler>
+        <NMessageProvider>
+          <CollapsileNavbarVue />
+          <TopBarVue />
+          <routerContainerVue />
+        </NMessageProvider>
+      </WebSocketHandler>
+    </NNotificationProvider>
   </NConfigProvider>
 </template>
 
 <script setup lang="ts">
 import {
   darkTheme,
-  NBackTop,
   NConfigProvider,
   NMessageProvider,
+  NNotificationProvider,
+  type GlobalThemeOverrides,
 } from "naive-ui";
 import CollapsileNavbarVue from "./components/CollapsileNavbar.vue";
 import TopBarVue from "./components/TopBar.vue";
 import routerContainerVue from "./core/router-container.vue";
+import WebSocketHandler from "./websockets/WebSocketHandler.vue";
+
+const themeOverrides: GlobalThemeOverrides = {};
 </script>

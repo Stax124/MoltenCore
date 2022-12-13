@@ -11,36 +11,54 @@
         @expand="collapsed = false"
         style="height: 100%"
       >
-        <n-menu
-          :collapsed="collapsed"
-          :collapsed-width="64"
-          :collapsed-icon-size="22"
-          :options="menuOptions"
-          style="height: 100%"
-        />
+        <NSpace vertical justify="space-between" style="height: 100%">
+          <n-menu
+            :collapsed="collapsed"
+            :collapsed-width="64"
+            :collapsed-icon-size="22"
+            :options="menuOptionsMain"
+          />
+        </NSpace>
       </n-layout-sider>
     </n-layout>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { useNotificationState } from "@/store/notificationState";
 import {
   ExtensionPuzzle,
   Home,
   InformationCircle,
+  Notifications,
   StatsChart,
+  Warning,
 } from "@vicons/ionicons5";
 import type { MenuOption } from "naive-ui";
-import { NIcon, NLayout, NLayoutSider, NMenu } from "naive-ui";
+import { NBadge, NIcon, NLayout, NLayoutSider, NMenu, NSpace } from "naive-ui";
 import type { Component } from "vue";
 import { h, ref } from "vue";
 import { RouterLink } from "vue-router";
+
+const notificationState = useNotificationState();
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-const menuOptions: MenuOption[] = [
+function renderNotification() {
+  return () =>
+    h(
+      NBadge,
+      { value: notificationState.$state.notifications.length },
+      {
+        default: () =>
+          h(NIcon, { color: "white" }, { default: () => h(Notifications) }),
+      }
+    );
+}
+
+const menuOptionsMain: MenuOption[] = [
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "Home" }),
     key: "home",
@@ -56,6 +74,21 @@ const menuOptions: MenuOption[] = [
     label: () => h(RouterLink, { to: "/stats" }, { default: () => "Stats" }),
     key: "stats",
     icon: renderIcon(StatsChart),
+  },
+  {
+    label: () => h(RouterLink, { to: "/test" }, { default: () => "Test" }),
+    key: "test",
+    icon: renderIcon(Warning),
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        { to: "/notifications" },
+        { default: () => "Notifications" }
+      ),
+    key: "notifications",
+    icon: renderNotification(),
   },
   {
     label: () => h(RouterLink, { to: "/about" }, { default: () => "About" }),

@@ -1,19 +1,16 @@
-import core.shared as shared
-from db import generate_engine, get_session
+from core.shared import bot
 from fastapi import APIRouter
 from models.config import Config
 from sqlmodel import select
 
 router = APIRouter(tags=["config"])
-engine = generate_engine()
-db = get_session(engine)
 
 
 @router.get("/config")
 async def config():
-    return db.exec(select(Config)).all().__str__()
+    return bot.database.exec(select(Config)).all().__str__()
 
 
 @router.get("/commands")
 async def commands():
-    return list(shared.bot.all_commands).__str__()
+    return list(bot.all_commands).__str__()

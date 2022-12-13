@@ -12,6 +12,7 @@
 import { NButton, NDataTable, type DataTableColumns } from "naive-ui";
 import type { Type as ButtonType } from "naive-ui/es/button/src/interface";
 import { h, reactive } from "vue";
+import { serverUrl } from "../env";
 import { useSyncState } from "../store/syncState";
 
 const syncState = useSyncState();
@@ -36,15 +37,13 @@ type Plugin = {
 const data: Plugin[] = [];
 
 async function updateData() {
-  const plugin_names = await (
-    await fetch("http://localhost:8080/api/plugins")
-  ).json();
+  const plugin_names = await (await fetch(serverUrl + "/api/plugins")).json();
 
   dataRef.splice(0, dataRef.length);
 
   for (const plugin_name of plugin_names) {
     const plugin = await (
-      await fetch(`http://localhost:8080/api/plugins/status/${plugin_name}`)
+      await fetch(`${serverUrl}/api/plugins/status/${plugin_name}`)
     ).json();
     dataRef.push(plugin);
   }
@@ -138,19 +137,13 @@ let columns = createColumns2({
     row.row_loading = true;
 
     if (row.enabled) {
-      data = fetch(
-        `http://localhost:8080/api/plugins/disable-plugin/${row.name}`,
-        {
-          method: "POST",
-        }
-      );
+      data = fetch(`${serverUrl}/api/plugins/disable-plugin/${row.name}`, {
+        method: "POST",
+      });
     } else {
-      data = fetch(
-        `http://localhost:8080/api/plugins/enable-plugin/${row.name}`,
-        {
-          method: "POST",
-        }
-      );
+      data = fetch(`${serverUrl}/api/plugins/enable-plugin/${row.name}`, {
+        method: "POST",
+      });
     }
 
     data.then((res) => {
