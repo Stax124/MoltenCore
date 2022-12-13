@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket
 from core.shared import bot
-import asyncio
+from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter(tags=["websockets"])
 
@@ -23,6 +23,9 @@ async def main_websocket(websocket: WebSocket):
     bot.websocket.add(websocket)
 
     while True:
-        text = await websocket.receive_text()
-        if text == "ping":
-            await websocket.send_text("pong")
+        try:
+            text = await websocket.receive_text()
+            if text == "ping":
+                await websocket.send_text("pong")
+        except WebSocketDisconnect:
+            pass

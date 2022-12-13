@@ -1,5 +1,9 @@
 from typing import Literal
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from core.bot import ModularBot
 
 from core.websockets.data import Data
 
@@ -39,13 +43,15 @@ class Notification:
 class NotificationQueue:
     "A queue for storing errors. Primarily for webui"
 
-    def __init__(self) -> None:
+    def __init__(self, bot: "ModularBot") -> None:
         self.notifications: list[Notification] = []
+        self.bot = bot
 
-    def add(self, nortification: Notification) -> None:
+    async def send(self, nortification: Notification) -> None:
         "Adds an error to the error queue."
 
         self.notifications.append(nortification)
+        await self.bot.websocket.send_data(nortification.to_data())
 
     def clear(self) -> None:
         "Clears the error queue."

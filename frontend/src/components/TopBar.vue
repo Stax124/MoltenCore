@@ -12,7 +12,7 @@
       }}</NButton
     >
     <NButton
-      :type="(syncState.$state.syncState as ButtonType)"
+      :type="websocketState.color"
       quaternary
       icon-placement="left"
       :render-icon="syncIcon"

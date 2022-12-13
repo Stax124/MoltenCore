@@ -59,9 +59,21 @@ export const useWebsocket = defineStore("websocket", () => {
     useNotification = notification_effect;
   }
 
+  function get_color() {
+    switch (readyState.value) {
+      case "CLOSED":
+        return "error";
+      case "CONNECTING":
+        return "warning";
+      case "OPEN":
+        return "success";
+    }
+  }
+
   const readyState = ref(websocket.status);
   const loading = computed(() => readyState.value === "CONNECTING");
   const text = computed(() => ws_text());
+  const color = computed(() => get_color());
 
   return {
     websocket,
@@ -70,5 +82,6 @@ export const useWebsocket = defineStore("websocket", () => {
     text,
     ws_open: websocket.open,
     injectNotificationHanler,
+    color,
   };
 });

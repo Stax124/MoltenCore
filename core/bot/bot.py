@@ -74,7 +74,7 @@ class ModularBot(AutoShardedBot):
         self.enable_rce: bool = enable_rce
 
         self.queue: Queue = Queue()
-        self.notification_queue: NotificationQueue = NotificationQueue()
+        self.notification_queue: NotificationQueue = NotificationQueue(self)
         self.errors = Errors()
 
         self.websocket: WebSocketManager = WebSocketManager()

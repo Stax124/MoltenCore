@@ -14,33 +14,7 @@
             <p>{{ systemStats.uptime }}</p>
           </template>
         </NCard>
-
-        <NCard
-          class="content-card"
-          hoverable
-          :segmented="{ content: true }"
-          title="Notifications"
-          style="--n-title-text-color: rgb(255, 150, 0)"
-        >
-          <NSkeleton v-if="loading" text />
-          <template v-else>
-            <p>{{ systemStats.notifications }}</p>
-          </template>
-        </NCard>
-
-        <NCard
-          class="content-card"
-          hoverable
-          :segmented="{ content: true }"
-          title="Errors"
-          style="--n-title-text-color: rgb(220, 0, 0)"
-        >
-          <NSkeleton v-if="loading" text />
-          <template v-else>
-            <p>{{ systemStats.errors }}</p>
-          </template>
-        </NCard></NSpace
-      >
+      </NSpace>
     </NCard>
     <NCard title="Plugins" hoverable class="layout-card">
       <NSpace>
@@ -97,8 +71,6 @@ interface PluginStats {
 
 interface SystemStats {
   uptime: string;
-  notifications: number;
-  errors: number;
 }
 
 const pluginStats = ref<PluginStats>({
@@ -108,8 +80,6 @@ const pluginStats = ref<PluginStats>({
 });
 const systemStats = ref<SystemStats>({
   uptime: "",
-  notifications: 0,
-  errors: 0,
 });
 
 const loading = ref(true);
