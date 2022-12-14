@@ -1,18 +1,14 @@
 import json
 import logging
 import os
-from sqlmodel import select
 import traceback
 from typing import TYPE_CHECKING, Optional
 
 import termcolor
-from discord.ext.commands.errors import (
-    ExtensionFailed,
-    ExtensionNotFound,
-    ExtensionNotLoaded,
-    NoEntryPointError,
-)
+from discord.ext.commands.errors import (ExtensionFailed, ExtensionNotFound,
+                                         ExtensionNotLoaded, NoEntryPointError)
 from git.repo import Repo
+from sqlmodel import select
 
 from core.parser.github_parser import Repository
 from core.plugins.plugin_encoder import PluginEncoder
@@ -27,14 +23,14 @@ class Plugin:
 
     def __init__(self, plugin_data: PluginData, bot: "ModularBot") -> None:
 
-        self.id = plugin_data.id
-        self.enabled = plugin_data.enabled
-        self.repo_url = plugin_data.url
+        self.id: int = plugin_data.id
+        self.enabled: bool = plugin_data.enabled
+        self.repo_url: str = plugin_data.url
         self.repo: Optional[Repo] = None
-        self.plugin_data = plugin_data
+        self.plugin_data: PluginData = plugin_data
 
         # Plugin data
-        self.repo_data = Repository(self.repo_url)
+        self.repo_data: Repository = Repository(self.repo_url)
         self.name = self.repo_data.name
         self.author = self.repo_data.owner
         self.stars = self.repo_data.stars
@@ -44,7 +40,7 @@ class Plugin:
         self.last_updated = self.repo_data.last_updated
 
         # Logger
-        self.logger = logging.getLogger("plugin." + self.name)
+        self.logger: logging.Logger = logging.getLogger("plugin." + self.name)
 
         # Traceback
         self.traceback: str = ""
@@ -68,7 +64,7 @@ class Plugin:
             self.enabled = False
 
         # Permissions
-        self.permissions = self.get_permissions()
+        self.permissions: PluginPermissions = self.get_permissions()
 
     def __repr__(self) -> str:
         return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
@@ -77,10 +73,10 @@ class Plugin:
         return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
 
     def to_dict(self) -> dict:
-        encoder = PluginEncoder()
+        encoder: PluginEncoder = PluginEncoder()
         return encoder.default(self)
 
-    def does_exist(self):
+    def does_exist(self) -> bool:
         if os.path.exists(f"plugins/{self.name}") and os.path.exists(
             f"plugins/{self.name}/.git"
         ):
@@ -88,8 +84,8 @@ class Plugin:
         else:
             return False
 
-    def get_permissions(self):
-        db_perms = self.bot.database.exec(
+    def get_permissions(self) -> PluginPermissions:
+        db_perms: list[PluginPermissions] = self.bot.database.exec(
             select(PluginPermissions).where(PluginPermissions.plugin_id == self.id)
         ).all()
 
@@ -101,13 +97,13 @@ class Plugin:
     def generate_permissions(self) -> PluginPermissions:
         "Check if plugin requires any permissions, if so, make changes in the database"
 
-        permissions = PluginPermissions(plugin_id=self.id)
+        permissions: PluginPermissions = PluginPermissions(plugin_id=self.id)
 
         self.logger.debug(
             f"Plugin {self.name} has no permissions in the database, generating"
         )
 
-        config_file = f"plugins/{self.name}/plugin.json"
+        config_file: str = f"plugins/{self.name}/plugin.json"
         if os.path.exists(config_file):
             try:
                 config: dict = json.load(open(config_file, "r"))

@@ -6,11 +6,11 @@ from discord.activity import Activity
 from discord.enums import ActivityType, Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
-from models.config import Config
-from models.guild import Guild
 
 from core.bot.bot import ModularBot
 from core.functions.confirm import confirm
+from models.config import Config
+from models.guild import Guild
 
 logger = logging.getLogger(__name__)
 

@@ -4,9 +4,10 @@ import { defineStore } from "pinia";
 import { reactive } from "vue";
 import type { NotificationMessage } from "./../websockets/websockets";
 
-const data: NotificationMessage[] = await fetch(
-  `${serverUrl}/api/notifications`
-).then((r) => r.json());
+const data: NotificationMessage[] = [];
+fetch(`${serverUrl}/api/notifications`, {
+  cache: "no-store",
+}).then((r) => r.json().then((d) => data.push(...d)));
 
 console.info("notifications", data);
 

@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 import discord
 from discord.colour import Colour
 from discord.ext.commands import Context
-from models.config import Config
 from sqlmodel import select
 
 from core.functions.paginator import Paginator
+from models.config import Config
 
 if TYPE_CHECKING:
     from core.bot.bot import ModularBot

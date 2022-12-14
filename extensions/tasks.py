@@ -1,8 +1,9 @@
 import logging
 
-from db import generate_engine, get_session
 from discord.ext import commands
 from discord.ext.commands.bot import AutoShardedBot
+
+from db import generate_engine, get_session
 
 engine = generate_engine()
 db = get_session(engine)

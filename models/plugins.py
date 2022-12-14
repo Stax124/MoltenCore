@@ -1,5 +1,5 @@
 from sqlalchemy import String
-from sqlmodel import BigInteger, Column, Field, SQLModel, Integer
+from sqlmodel import BigInteger, Column, Field, Integer, SQLModel
 
 
 class PluginPermission:

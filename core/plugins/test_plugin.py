@@ -1,10 +1,10 @@
 import logging
 
 import pytest
-from models.plugins import PluginData
 
 from core.bot.bot import ModularBot
 from core.plugins.plugin import Plugin
+from models.plugins import PluginData
 
 
 @pytest.fixture()

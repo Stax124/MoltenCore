@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from core.shared import bot
 from fastapi.responses import RedirectResponse
+
+from core.shared import bot
 
 router = APIRouter(tags=["bot"])
 

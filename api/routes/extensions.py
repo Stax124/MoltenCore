@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from core.shared import bot
 
 router = APIRouter(tags=["extensions"])

@@ -4,12 +4,12 @@ import logging
 import sys
 
 import discord
-import models  # For eval
 from discord.enums import Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
 from sqlmodel import select  # For eval
 
+import models  # For eval
 from core.bot.bot import ModularBot
 from core.functions.confirm import confirm
 from core.structures.embed import ModularEmbedList

@@ -4,16 +4,16 @@ import os
 import subprocess
 from threading import Thread
 
-from sqlmodel import SQLModel
-
 from fastapi import FastAPI
+from sqlmodel import SQLModel
 from sqlmodel.sql.expression import Select, SelectOfScalar
 from uvicorn import run as uvicorn_run
-from core.logger import install_logger
 
 import core.shared as shared
 from core.bot.bot import ModularBot
-from core.functions.functions import generate_necessarry_files, is_in_virtualenv
+from core.functions.functions import (generate_necessarry_files,
+                                      is_in_virtualenv)
+from core.logger import install_logger
 
 # Fix sqlalchemy caching with sqlmodel
 SelectOfScalar.inherit_cache = True  # type: ignore

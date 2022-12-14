@@ -1,7 +1,9 @@
 import logging
 from typing import Optional
-from core.structures.const import loglevels
+
 from coloredlogs import install as install_coloredlogs
+
+from core.structures.const import loglevels
 
 
 def install_logger(file: Optional[str], logging_arg: str):

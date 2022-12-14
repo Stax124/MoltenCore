@@ -1,6 +1,5 @@
-from typing import Literal
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from core.bot import ModularBot
@@ -57,3 +56,8 @@ class NotificationQueue:
         "Clears the error queue."
 
         self.notifications.clear()
+
+    def remove(self, id: int) -> None:
+        "Removes an error from the error queue."
+
+        self.notifications = [i for i in self.notifications if i.id != id]

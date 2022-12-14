@@ -5,11 +5,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 from discord.ext.commands.context import Context
-from discord.ext.commands.errors import (
-    ExtensionAlreadyLoaded,
-    ExtensionNotFound,
-    ExtensionNotLoaded,
-)
+from discord.ext.commands.errors import (ExtensionAlreadyLoaded,
+                                         ExtensionNotFound, ExtensionNotLoaded)
 
 from core.bot.bot import ModularBot
 from core.functions.functions import get_extensions

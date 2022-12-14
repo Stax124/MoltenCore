@@ -1,7 +1,8 @@
-from core.shared import bot
 from fastapi import APIRouter
-from models.config import Config
 from sqlmodel import select
+
+from core.shared import bot
+from models.config import Config
 
 router = APIRouter(tags=["config"])
 

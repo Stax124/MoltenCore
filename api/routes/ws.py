@@ -1,19 +1,13 @@
+import logging
+
 from fastapi import APIRouter, WebSocket
-from core.shared import bot
 from starlette.websockets import WebSocketDisconnect
+
+from core.shared import bot
 
 router = APIRouter(tags=["websockets"])
 
-
-@router.websocket("/test")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-
-    bot.websocket.add(websocket)
-
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+logger = logging.getLogger(__name__)
 
 
 @router.websocket("/master")
@@ -21,6 +15,9 @@ async def main_websocket(websocket: WebSocket):
     await websocket.accept()
 
     bot.websocket.add(websocket)
+    logger.debug(
+        f"Added websocket to list ({websocket.client.host if websocket.client else 'Unknown'}:{websocket.client.port if websocket.client else 'Unknown'})"
+    )
 
     while True:
         try:
@@ -28,4 +25,6 @@ async def main_websocket(websocket: WebSocket):
             if text == "ping":
                 await websocket.send_text("pong")
         except WebSocketDisconnect:
-            pass
+            bot.websocket.remove(websocket)
+        except RuntimeError:
+            bot.websocket.remove(websocket)

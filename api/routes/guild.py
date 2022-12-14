@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from models.guild import Guild
 from sqlmodel import select
+
 from core.shared import bot
+from models.guild import Guild
 
 router = APIRouter(tags=["guild"])
 

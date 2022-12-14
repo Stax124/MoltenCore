@@ -1,6 +1,8 @@
-from fastapi import WebSocket
-from .data import Data
 import logging
+
+from fastapi import WebSocket
+
+from .data import Data
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,10 @@ class WebSocketManager:
         self.sockets.append(socket)
 
     def remove(self, socket: WebSocket):
-        self.sockets.remove(socket)
+        try:
+            self.sockets.remove(socket)
+        except ValueError:
+            pass
 
     def check_connected(self):
         for socket in self.sockets:

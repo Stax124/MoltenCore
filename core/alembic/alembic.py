@@ -1,5 +1,6 @@
-from alembic.config import Config
 from alembic import command
+from alembic.config import Config
+
 
 # Migrate the database to the latest version
 def upgrade(config: str = "alembic.ini"):

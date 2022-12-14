@@ -1,7 +1,7 @@
-import enum
-from typing import Coroutine
-import logging
 import asyncio
+import enum
+import logging
+from typing import Coroutine
 
 logger = logging.getLogger(__name__)
 

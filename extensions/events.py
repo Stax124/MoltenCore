@@ -5,8 +5,9 @@ import logging
 import discord
 from discord.errors import NotFound
 from discord.ext import commands
-from discord.ext.commands.errors import CommandNotFound, MissingRequiredArgument
 from discord.ext.commands import CommandError, Context
+from discord.ext.commands.errors import (CommandNotFound,
+                                         MissingRequiredArgument)
 
 from core.bot.bot import ModularBot
 

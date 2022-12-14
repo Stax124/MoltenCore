@@ -6,9 +6,9 @@ import discord
 from discord.activity import Activity
 from discord.enums import ActivityType
 from discord.ext import commands
-from models.guild import Guild
 
 from core.bot.bot import ModularBot
+from models.guild import Guild
 
 logger = logging.getLogger(__name__)
 

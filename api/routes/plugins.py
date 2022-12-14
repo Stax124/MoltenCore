@@ -1,6 +1,7 @@
-from core.shared import bot
 from fastapi import APIRouter, HTTPException
+
 from api.queue import run_async
+from core.shared import bot
 
 router = APIRouter(tags=["plugins"])
 
