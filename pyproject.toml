@@ -68,6 +68,14 @@ cmd = "docker build -t moltencore --no-cache ."
 help = "Test the project"
 cmd = "python -m pytest --ignore=plugins"
 
+[tool.poe.tasks.dockertag]
+help = "Test the project"
+cmd = "docker tag moltencore:latest stax124/moltencore:latest"
+
+[tool.poe.tasks.dockerpush]
+help = "Test the project"
+cmd = "docker push stax124/moltencore:latest"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
