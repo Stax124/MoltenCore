@@ -1,12 +1,12 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-	title: "Modular-Discord-Bot",
+	title: "MoltenCore",
 	description: "Easy to use Discord bot that can be extended with plugins",
 	lang: "en-US",
 	appearance: true,
 	lastUpdated: true,
-	base: "/Modular-Discord-Bot/",
+	base: "/MoltenCore/",
 	themeConfig: {
 		sidebar: [
 			{
@@ -16,13 +16,12 @@ export default defineConfig({
 			},
 		],
 		editLink: {
-			pattern:
-				"https://github.com/Stax124/Modular-Discord-Bot/edit/main/docs/:path",
+			pattern: "https://github.com/Stax124/MoltenCore/edit/main/docs/:path",
 		},
 		socialLinks: [
 			{
 				icon: "github",
-				link: "https://github.com/Stax124/Modular-Discord-Bot",
+				link: "https://github.com/Stax124/MoltenCore",
 			},
 		],
 	},

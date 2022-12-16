@@ -1,9 +1,9 @@
 {
-  "name": "modular-docs",
+  "name": "moltencore-docs",
   "version": "0.0.1",
-  "description": "Documentation for Modular Discord bot",
+  "description": "Documentation for MoltenCore",
   "main": "index.js",
-  "repository": "https://github.com/Stax124/Modular-Discord-Bot.git",
+  "repository": "https://github.com/Stax124/MoltenCore.git",
   "author": "Stax124 <tamoncz@gmail.com>",
   "license": "MIT",
   "devDependencies": {

@@ -1,8 +1,8 @@
-# Modular-Discord-Bot Contributing Guide
+# MoltenCore Contributing Guide
 
 Hi! We're really excited that you are interested in contributing to VitePress. Before submitting your contribution, please make sure to take a moment and read through the following guidelines:
 
-- [Code of Conduct]([https://github.com/vuejs/vue/blob/dev/.github/CODE_OF_CONDUCT.md](https://github.com/Stax124/Modular-Discord-Bot/blob/master/CODE_OF_CONDUCT.md))
+- [Code of Conduct](<[https://github.com/vuejs/vue/blob/dev/.github/CODE_OF_CONDUCT.md](https://github.com/Stax124/MoltenCore/blob/master/CODE_OF_CONDUCT.md)>)
 - [Pull Request Guidelines](#pull-request-guidelines)
 
 ## Pull Request Guidelines

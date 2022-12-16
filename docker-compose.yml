@@ -17,7 +17,7 @@ services:
       - "5432:5432"
 
   bot:
-    image: modular:latest
+    image: moltencore:latest
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
     healthcheck:
@@ -30,7 +30,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    container_name: modular-bot
+    container_name: moltencore
     volumes:
       - ./compose-alembic.ini:/usr/src/app/alembic.ini
 

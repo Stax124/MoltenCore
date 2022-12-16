@@ -35,11 +35,11 @@ body:
       label: Validations
       description: Before submitting the issue, please make sure you do the following
       options:
-        - label: Follow our [Code of Conduct](https://github.com/Stax124/Modular-Discord-Bot/blob/master/CODE_OF_CONDUCT.md)
+        - label: Follow our [Code of Conduct](https://github.com/Stax124/MoltenCore/blob/master/CODE_OF_CONDUCT.md)
           required: true
-        - label: Read the [docs](https://stax124.github.io/Modular-Discord-Bot).
+        - label: Read the [docs](https://stax124.github.io/MoltenCore).
           required: true
-        - label: Read the [Contributing Guidelines](https://github.com/Stax124/Modular-Discord-Bot/blob/master/CONTRIBUTING.md).
+        - label: Read the [Contributing Guidelines](https://github.com/Stax124/MoltenCore/blob/master/CONTRIBUTING.md).
           required: true
         - label: Check that there isn't already an issue that asks for the same feature to avoid creating a duplicate.
           required: true
