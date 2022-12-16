@@ -4,6 +4,7 @@ import os
 import subprocess
 from threading import Thread
 
+import dotenv
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from sqlmodel.sql.expression import Select, SelectOfScalar
@@ -11,13 +12,14 @@ from uvicorn import run as uvicorn_run
 
 import core.shared as shared
 from core.bot.bot import ModularBot
-from core.functions.functions import (generate_necessarry_files,
-                                      is_in_virtualenv)
+from core.functions.functions import generate_necessarry_files, is_in_virtualenv
 from core.logger import install_logger
 
 # Fix sqlalchemy caching with sqlmodel
 SelectOfScalar.inherit_cache = True  # type: ignore
 Select.inherit_cache = True  # type: ignore
+
+dotenv.load_dotenv()
 
 
 def main():

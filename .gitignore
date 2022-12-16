@@ -3,7 +3,7 @@ alembic.ini
 migrations/versions/
 
 # Plugins
-./plugins/
+plugins/**
 
 # Python specific stuff
 **/__pycache__

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="drawing-1.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   inkscape:export-filename="C:\Users\Admin\Downloads\bitmap.png"
+   inkscape:export-xdpi="133.50793"
+   inkscape:export-ydpi="133.50793"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.57549102"
+     inkscape:cx="190.2723"
+     inkscape:cy="444.83752"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showborder="false"
+     inkscape:snap-grids="true"
+     inkscape:snap-page="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3967" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5597">
+      <stop
+         style="stop-color:#ff0e00;stop-opacity:1"
+         offset="0"
+         id="stop5593" />
+      <stop
+         style="stop-color:#ff00ff;stop-opacity:1"
+         offset="1"
+         id="stop5595" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="copy_rotate"
+       starting_point="138.48473,147.18621"
+       origin="105.18831,147.18621"
+       id="path-effect2201"
+       is_visible="true"
+       lpeversion="1"
+       method="normal"
+       num_copies="3"
+       starting_angle="0"
+       rotation_angle="120"
+       gap="-0.01"
+       copies_to_360="true"
+       mirror_copies="false"
+       split_items="true" />
+    <inkscape:path-effect
+       effect="copy_rotate"
+       starting_point="0,0"
+       origin="71.703633,71.439308"
+       id="path-effect2199"
+       is_visible="true"
+       lpeversion="1"
+       method="normal"
+       num_copies="6"
+       starting_angle="0"
+       rotation_angle="60"
+       gap="-0.1"
+       copies_to_360="true"
+       mirror_copies="false"
+       split_items="false" />
+    <inkscape:path-effect
+       effect="copy_rotate"
+       starting_point="0,0"
+       origin="72.6,71.439308"
+       id="path-effect1841"
+       is_visible="true"
+       lpeversion="1"
+       method="normal"
+       num_copies="3"
+       starting_angle="0"
+       rotation_angle="60"
+       gap="-0.01"
+       copies_to_360="true"
+       mirror_copies="false"
+       split_items="false" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5597"
+       id="linearGradient8581"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(3.7795276,0,0,3.7795276,-1.9129952e-4,9.4488188e-5)"
+       x1="19.830734"
+       y1="63.718422"
+       x2="190.17996"
+       y2="234.06767" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path8501"
+       style="fill:url(#linearGradient8581);fill-opacity:1;stroke-width:1.00157"
+       d="m 396.84961,237.18945 a 324.07107,324.07107 0 0 0 -92.69922,13.61524 l 24.29492,90.67383 a 230.23817,230.23817 0 0 1 68.4043,-10.45704 230.23817,230.23817 0 0 1 67.96289,10.26563 l 24.28125,-90.61719 a 324.07107,324.07107 0 0 0 -92.24414,-13.48047 z m 110.95898,19.58985 -24.41797,91.1289 a 230.23817,230.23817 0 0 1 143.69727,213.35157 230.23817,230.23817 0 0 1 -2.21875,31.82226 l 91.05469,24.39844 a 324.07107,324.07107 0 0 0 4.99805,-56.2207 A 324.07107,324.07107 0 0 0 507.80859,256.7793 Z m -222.36328,0.17578 a 324.07107,324.07107 0 0 0 -212.666013,304.30469 324.07107,324.07107 0 0 0 5.367187,58.41992 l 91.076176,-24.4043 a 230.23817,230.23817 0 0 1 -2.61133,-34.01562 230.23817,230.23817 0 0 1 143.27344,-213.09961 z m 111.4043,145.80273 A 158.50251,158.50251 0 0 0 238.34766,561.25977 158.50251,158.50251 0 0 0 396.84961,719.76172 158.50251,158.50251 0 0 0 555.35352,561.25977 158.50251,158.50251 0 0 0 396.84961,402.75781 Z m 0,17.81641 A 140.68638,140.68638 0 0 1 537.53711,561.25977 140.68638,140.68638 0 0 1 396.84961,701.94531 140.68638,140.68638 0 0 1 256.16406,561.25977 140.68638,140.68638 0 0 1 396.84961,420.57422 Z m -26.39649,64.76367 a 30.103191,30.103191 0 0 0 -30.10351,30.10156 30.103191,30.103191 0 0 0 30.10351,30.10352 30.103191,30.103191 0 0 0 30.10352,-30.10352 30.103191,30.103191 0 0 0 -30.10352,-30.10156 z m 91.07813,15.66602 a 21.502279,21.502279 0 0 0 -21.50195,21.50195 21.502279,21.502279 0 0 0 21.50195,21.50195 21.502279,21.502279 0 0 0 21.50195,-21.50195 21.502279,21.502279 0 0 0 -21.50195,-21.50195 z m -146.98437,65.42773 a 11.058315,11.058315 0 0 0 -11.05665,11.05859 11.058315,11.058315 0 0 0 11.05665,11.0586 11.058315,11.058315 0 0 0 11.05859,-11.0586 11.058315,11.058315 0 0 0 -11.05859,-11.05859 z m 125.94335,17.45898 a 29.846098,29.846098 0 0 0 -29.84765,29.84571 29.846098,29.846098 0 0 0 29.84765,29.8457 29.846098,29.846098 0 0 0 29.84571,-29.8457 29.846098,29.846098 0 0 0 -29.84571,-29.84571 z m 180.82227,28.58985 a 230.23817,230.23817 0 0 1 -67.45703,117.16992 l 66.37891,66.37891 a 324.07107,324.07107 0 0 0 91.74609,-159.25391 z m -448.375,2.15234 -90.683594,24.29883 a 324.07107,324.07107 0 0 0 93.330074,159.02344 l 66.39454,-66.39453 A 230.23817,230.23817 0 0 1 172.9375,614.63281 Z m 176.62891,19.37696 a 12.901367,12.901367 0 0 0 -12.90235,12.90234 12.901367,12.901367 0 0 0 12.90235,12.90039 12.901367,12.901367 0 0 0 12.90039,-12.90039 12.901367,12.901367 0 0 0 -12.90039,-12.90234 z m 189.30664,108.45898 a 230.23817,230.23817 0 0 1 -142.02344,49.0293 230.23817,230.23817 0 0 1 -139.68555,-47.32227 l -66.76367,66.76367 a 324.07107,324.07107 0 0 0 206.44922,74.39063 324.07107,324.07107 0 0 0 208.66601,-76.21875 z"
+       transform="scale(0.26458333)"
+       inkscape:export-filename="C:\Users\Admin\Downloads\path8501.png"
+       inkscape:export-xdpi="133.50793"
+       inkscape:export-ydpi="133.50793" />
+  </g>
+</svg>
