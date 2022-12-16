@@ -43,6 +43,7 @@
 # 📔 Table of Contents
 
 - [📔 Table of Contents](#-table-of-contents)
+- [❗UNDER HEAVY DEVELOPMENT❗](#under-heavy-development)
   - [🌟 About the Project](#-about-the-project)
     - [📷 Screenshots](#-screenshots)
     - [🛰️ Tech Stack](#️-tech-stack)
@@ -61,6 +62,8 @@
   - [⚠️ License](#️-license)
   - [🤝 Contact](#-contact)
   - [💎 Acknowledgements](#-acknowledgements)
+
+# ❗UNDER HEAVY DEVELOPMENT❗
 
 ## 🌟 About the Project
 
@@ -111,9 +114,9 @@
 
 ### 🎯 Features
 
-- Feature 1
-- Feature 2
-- Feature 3
+- Install whatever plugins you want, no bloat
+- Easy install with Docker
+- Dashboard to manage your bot and plugins
 
 ### 🔑 Environment Variables
 
@@ -227,7 +230,7 @@ Please read the [Code of Conduct](https://github.com/Stax124/MoltenCore/blob/mas
 
 ## ⚠️ License
 
-Distributed under the <b>MIT License</b>. See LICENSE.txt for more information.
+Distributed under the <b>MIT License</b>. See LICENSE for more information.
 
 ## 🤝 Contact
 
