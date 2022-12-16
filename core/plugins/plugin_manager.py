@@ -12,44 +12,74 @@ from models.plugins import PluginData
 if TYPE_CHECKING:
     from core.bot.bot import ModularBot
 
+logger = logging.getLogger("plugin-handler")
 
-class PluginHandler:
+
+class PluginManager:
     "Takes care of managing all the installed plugins"
 
     def __init__(self, bot: "ModularBot") -> None:
-        self.logger = logging.getLogger("plugin-handler")
         self.bot = bot
 
     def _find_plugin_data(self) -> list[PluginData]:
         return self.bot.database.exec(select(PluginData)).all()
 
     def populate_plugins(self) -> None:
-        self.logger.debug("Populating plugin list")
+        logger.debug("Populating plugin list")
 
         for data in self._find_plugin_data():
             plugin = Plugin(data, self.bot)
             self.bot.plugins[plugin.name] = plugin
 
+    async def remove_plugin(self, name: str) -> None:
+        logger.debug(f"Removing plugin {name}")
+        plugin = self.bot.plugins[name]
+        await plugin.remove()
+        del self.bot.plugins[name]
+
+    async def install_plugin(self, url: str) -> None:
+        logger.debug(f"Installing plugin from {url}")
+
+        try:
+            new_id = (
+                max(i.id for i in self.bot.database.exec(select(PluginData)).all()) + 1
+            )
+        except ValueError:
+            new_id = 1
+        logger.debug(f"Created plugin id: {new_id}")
+        new_data = PluginData(id=new_id, url=url)
+        self.bot.database.add(new_data)
+
+        plugin = Plugin(new_data, self.bot)
+
+        logger.info(f"Installing requirements")
+        self.install_requirements()
+
+        await plugin.load()
+        self.bot.plugins[plugin.name] = plugin
+
+        self.bot.database.commit()
+
     async def reload_all_plugins(self) -> None:
-        self.logger.debug("Reloading plugin data of all plugins")
+        logger.debug("Reloading plugin data of all plugins")
 
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
             if plugin.enabled:
                 await plugin.reload()
-                logging.debug(f"{plugin_name} successfully reloaded")
+                logger.debug(f"{plugin_name} successfully reloaded")
 
     async def load_all_plugins(self) -> None:
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
             await plugin.load()
-            logging.debug(f"{plugin_name} successfully loaded")
+            logger.debug(f"{plugin_name} successfully loaded")
 
     async def unload_all_plugins(self) -> None:
         for plugin_name in self.bot.plugins:
             plugin = self.bot.plugins[plugin_name]
             await plugin.unload()
-            logging.debug(f"{plugin_name} successfully unloaded")
+            logger.debug(f"{plugin_name} successfully unloaded")
 
     @property
     def requirements(self) -> list[str]:
@@ -72,7 +102,7 @@ class PluginHandler:
             for i in self.requirements:
                 importlib.import_module(i)
         except ImportError:
-            logging.warning("Some requirements not found, installing them")
+            logger.warning("Some requirements not found, installing them")
             extended = (
                 "\\Scripts\\python.exe" if sys.platform == "win32" else "\\bin\\python"
             )

@@ -16,9 +16,6 @@ export const useWebsocket = defineStore("websocket", () => {
       message: "ping",
       interval: 30000,
     },
-    onConnected: () => {
-      console.log("MASTER Websocket connected");
-    },
     onMessage: (ws: WebSocket, event: MessageEvent) => {
       console.info(event.data);
       if (event.data === "pong") {
@@ -31,16 +28,7 @@ export const useWebsocket = defineStore("websocket", () => {
       }
       processWebSocket(data, useNotification);
     },
-    onError: (ws: WebSocket, event: Event) => {
-      console.error("MASTER Websocket error");
-      console.error(event);
-    },
-    onDisconnected: (ws: WebSocket, event: CloseEvent) => {
-      console.log("MASTER Websocket disconnected");
-      console.log(event);
-    },
   });
-  console.log("MASTER Websocket created");
 
   function ws_text() {
     switch (readyState.value) {

@@ -25,10 +25,12 @@ export function processWebSocket(
 
     console.info("Received notification", n);
 
-    notificationState.push(n, notification_effect);
-  } else {
-    console.log("Received unknown message", message);
-    console.log("Type", message.type);
+    if (!(n.id in notificationState.notifications.map((n) => n.id))) {
+      notificationState.push(n, notification_effect);
+    } else {
+      console.log("Received unknown message", message);
+      console.log("Type", message.type);
+    }
   }
 }
 

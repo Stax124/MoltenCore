@@ -24,7 +24,10 @@ async def main_websocket(websocket: WebSocket):
             text = await websocket.receive_text()
             if text == "ping":
                 await websocket.send_text("pong")
-        except WebSocketDisconnect:
-            bot.websocket.remove(websocket)
-        except RuntimeError:
+        except RuntimeError or WebSocketDisconnect:
+            try:
+                await websocket.close()
+            except WebSocketDisconnect:
+                pass
+
             bot.websocket.remove(websocket)

@@ -58,6 +58,10 @@ cmd = "alembic revision --autogenerate"
 help = "Migrate the database"
 cmd = "alembic upgrade head"
 
+[tool.poe.tasks.rebuild]
+help = "Migrate the database"
+cmd = "docker build -t modular --no-cache ."
+
 [tool.poe.tasks.test]
 help = "Test the project"
 cmd = "python -m pytest --ignore=plugins"

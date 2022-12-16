@@ -44,3 +44,24 @@ async def plugin_stats():
         "disabled": len([i for i in bot.plugins if not bot.plugins[i].enabled]),
         "total": len(bot.plugins),
     }
+
+
+@router.post("/reload-all")
+async def reload_all():
+    await run_async(bot.plugin_manager.reload_all_plugins())
+    return {"status": "ok"}
+
+
+@router.post("/install-plugin")
+async def install_plugin(url: str):
+    await run_async(bot.plugin_manager.install_plugin(url))
+    return {"status": "ok"}
+
+
+@router.post("/remove-plugin/{plugin}")
+async def remove_plugin(plugin: str):
+    try:
+        await run_async(bot.plugin_manager.remove_plugin(plugin))
+        return {"status": "ok"}
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Plugin not found")

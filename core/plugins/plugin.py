@@ -1,12 +1,17 @@
 import json
 import logging
 import os
+import shutil
 import traceback
 from typing import TYPE_CHECKING, Optional
 
 import termcolor
-from discord.ext.commands.errors import (ExtensionFailed, ExtensionNotFound,
-                                         ExtensionNotLoaded, NoEntryPointError)
+from discord.ext.commands.errors import (
+    ExtensionFailed,
+    ExtensionNotFound,
+    ExtensionNotLoaded,
+    NoEntryPointError,
+)
 from git.repo import Repo
 from sqlmodel import select
 
@@ -42,13 +47,26 @@ class Plugin:
         # Logger
         self.logger: logging.Logger = logging.getLogger("plugin." + self.name)
 
+        # Bot needs to be here to access the database
+        self.bot: "ModularBot" = bot
+
         # Traceback
         self.traceback: str = ""
         self.short_traceback: str = ""
 
-        # Bot needs to be here to access the database
-        self.bot: "ModularBot" = bot
+        self.initialize()
 
+    def __repr__(self) -> str:
+        return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
+
+    def __str__(self) -> str:
+        return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
+
+    def to_dict(self) -> dict:
+        encoder: PluginEncoder = PluginEncoder()
+        return encoder.default(self)
+
+    def initialize(self) -> None:
         self.exists = self.does_exist()
         self.empty = self.executable_files() == []
 
@@ -65,16 +83,6 @@ class Plugin:
 
         # Permissions
         self.permissions: PluginPermissions = self.get_permissions()
-
-    def __repr__(self) -> str:
-        return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
-
-    def __str__(self) -> str:
-        return f"Plugin(name={self.name}, hash={self.repo.head.object.hexsha if self.repo else 'Unknown'}, enabled={self.enabled})"
-
-    def to_dict(self) -> dict:
-        encoder: PluginEncoder = PluginEncoder()
-        return encoder.default(self)
 
     def does_exist(self) -> bool:
         if os.path.exists(f"plugins/{self.name}") and os.path.exists(
@@ -279,6 +287,15 @@ class Plugin:
             self.logger.error(f"Could not update plugin {self.name}: Repo not loaded")
             return False
 
+    async def remove(self):
+        "Removes the plugin files"
+
+        self.logger.info(f"Removing plugin {self.name}")
+        await self.unload()
+        self.bot.database.delete(self.plugin_data)
+        self.bot.database.delete(self.permissions)
+        shutil.rmtree(f"plugins/{self.name}", ignore_errors=True)
+
     def get_requirements(self) -> list[str]:
         "Reads the requirements.txt file and returns a list of requirements"
 
@@ -295,6 +312,7 @@ class Plugin:
         )
 
         # Recheck if there are files to be loaded
+        self.exists = self.does_exist()
         self.empty = self.executable_files() == []
 
     def get_git_repo(self):

@@ -15,7 +15,7 @@ from sqlmodel import Session, select
 from core.errors import Errors
 from core.notifications import NotificationQueue
 from core.plugins.plugin import Plugin
-from core.plugins.plugin_handler import PluginHandler
+from core.plugins.plugin_manager import PluginManager
 from core.queue import Queue
 from core.queue import Status as QueueStatus
 from core.websockets.manager import WebSocketManager
@@ -67,7 +67,7 @@ class ModularBot(AutoShardedBot):
         # Plugins
         self.disable_plugins: bool = disable_plugins
         self.plugins: dict[str, Plugin] = {}
-        self.plugin_handler: PluginHandler = PluginHandler(self)
+        self.plugin_manager: PluginManager = PluginManager(self)
         if self.disable_plugins:
             logger.warning("Plugins are disabled")
 
@@ -213,10 +213,10 @@ class ModularBot(AutoShardedBot):
 
         # Load plugins if enabled
         if not self.disable_plugins:
-            self.plugin_handler.populate_plugins()
+            self.plugin_manager.populate_plugins()
             logger.info(f"Plugins: {self.plugins}")
-            self.plugin_handler.install_requirements()
-            await self.plugin_handler.load_all_plugins()
+            self.plugin_manager.install_requirements()
+            await self.plugin_manager.load_all_plugins()
         else:
             logger.warning("Plugins are disabled")
 

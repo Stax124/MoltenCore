@@ -5,8 +5,11 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 from discord.ext.commands.context import Context
-from discord.ext.commands.errors import (ExtensionAlreadyLoaded,
-                                         ExtensionNotFound, ExtensionNotLoaded)
+from discord.ext.commands.errors import (
+    ExtensionAlreadyLoaded,
+    ExtensionNotFound,
+    ExtensionNotLoaded,
+)
 
 from core.bot.bot import ModularBot
 from core.functions.functions import get_extensions
@@ -122,7 +125,7 @@ class Core(commands.Cog):
 
         ok = True
 
-        self.bot.plugin_handler.populate_plugins()
+        self.bot.plugin_manager.populate_plugins()
 
         for plugin_name in self.bot.plugins:
             try:
@@ -150,7 +153,7 @@ class Core(commands.Cog):
     @commands.is_owner()
     async def command_reload_plugin(self, ctx: Context, plugin: str) -> None:
         try:
-            self.bot.plugin_handler.populate_plugins()
+            self.bot.plugin_manager.populate_plugins()
             await self.bot.plugins[plugin].reload()
             logger.info(f"{plugin} reloaded")
             embed = discord.Embed(color=0x00FF00, description=f"{plugin} reloaded")
@@ -168,7 +171,7 @@ class Core(commands.Cog):
     @commands.is_owner()
     async def command_load_plugin(self, ctx: Context, plugin: str) -> None:
         try:
-            self.bot.plugin_handler.populate_plugins()
+            self.bot.plugin_manager.populate_plugins()
             await self.bot.plugins[plugin].load()
             logger.info(f"{plugin} loaded")
             embed = discord.Embed(color=0x00FF00, description=f"{plugin} loaded")

@@ -9,24 +9,19 @@ fetch(`${serverUrl}/api/notifications`, {
   cache: "no-store",
 }).then((r) => r.json().then((d) => data.push(...d)));
 
-console.info("notifications", data);
-
 const notifications: NotificationMessage[] = reactive(data);
 
-export const useNotificationState = defineStore("notification", {
-  state: () => {
-    return { notifications };
-  },
-  actions: {
-    push(
-      n: NotificationMessage,
-      notification_effect: NotificationApiInjection
-    ) {
-      notifications.push(n);
-      notification_effect[n.severity]({
-        title: n.message,
-        duration: n.timeout,
-      });
-    },
-  },
+export const useNotificationState = defineStore("notification", () => {
+  const push = (
+    n: NotificationMessage,
+    notification_effect: NotificationApiInjection
+  ) => {
+    notifications.push(n);
+    notification_effect[n.severity]({
+      title: n.message,
+      duration: n.timeout,
+    });
+  };
+
+  return { notifications, push };
 });
