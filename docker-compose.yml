@@ -17,7 +17,7 @@ services:
       - "5432:5432"
 
   bot:
-    image: moltencore:latest
+    image: stax124/moltencore:latest
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
     healthcheck:
