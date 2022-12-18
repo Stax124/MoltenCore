@@ -1,6 +1,7 @@
 # Python
 __pycache__
 .mypy_cache
+.mypy_cache
 .pytest_cache
 **/*.pyc
 poetry.lock
@@ -12,6 +13,7 @@ frontend/
 
 # Database
 alembic.ini
+alembic-template.ini
 
 # Plugins
 plugins/
@@ -22,7 +24,19 @@ plugins/
 .gitignore
 .vscode
 README.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
 
 # Docker
 docker-compose.yml
 Dockerfile
+
+# Docs
+docs/
+node_modules/
+package.json
+yarn-error.log
+yarn.lock
+
+# Assets
+assets/

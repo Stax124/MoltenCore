@@ -8,7 +8,6 @@ from discord import utils
 from discord.ext import commands
 from discord.ext.commands import AutoShardedBot
 from discord.ext.tasks import loop
-from fastapi import WebSocket
 from pretty_help import PrettyHelp
 from sqlmodel import Session, select
 
