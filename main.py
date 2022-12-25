@@ -119,6 +119,7 @@ def main():
     # Start web server in separate thread
     web_thread = Thread(target=run_web, args=[api_app, args.host, args.port])
     web_thread.daemon = True
+    web_thread.name = "backend"
     web_thread.start()
 
     # Start bot

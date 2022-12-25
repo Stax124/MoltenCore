@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from api.queue import run_async
+from core.exceptions import URLException
 from core.shared import bot
 
 router = APIRouter(tags=["plugins"])
@@ -54,7 +55,11 @@ async def reload_all():
 
 @router.post("/install-plugin")
 async def install_plugin(url: str):
-    await run_async(bot.plugin_manager.install_plugin(url))
+    try:
+        await run_async(bot.plugin_manager.install_plugin(url))
+    except URLException:
+        raise HTTPException(status_code=400, detail="Invalid URL")
+
     return {"status": "ok"}
 
 

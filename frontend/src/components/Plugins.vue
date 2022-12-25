@@ -1,5 +1,18 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
+  <NSpace justify="end" inline align="center" class="install">
+    <NButton type="primary" bordered secondary @click="updateData"
+      >Refresh</NButton
+    >
+    <NButton
+      type="primary"
+      bordered
+      secondary
+      @click="installPlugin"
+      style="margin-right: 24px"
+      >Install</NButton
+    >
+  </NSpace>
   <n-data-table
     :columns="columnsRef"
     :data="dataRef"
@@ -9,9 +22,18 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton, NDataTable, type DataTableColumns } from "naive-ui";
+import { LogoGithub, Menu, TrashOutline } from "@vicons/ionicons5";
+import {
+  NButton,
+  NDataTable,
+  NDropdown,
+  NIcon,
+  NSpace,
+  type DataTableColumns,
+} from "naive-ui";
 import type { Type as ButtonType } from "naive-ui/es/button/src/interface";
-import { h, reactive } from "vue";
+import type { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
+import { h, reactive, type Component } from "vue";
 import { serverUrl } from "../env";
 import { useSyncState } from "../store/syncState";
 
@@ -36,6 +58,23 @@ type Plugin = {
 
 const data: Plugin[] = [];
 
+const renderIcon = (
+  icon: Component,
+  size: "small" | "medium" | "large" = "medium"
+) => {
+  return () => {
+    return h(
+      NIcon,
+      {
+        size: size,
+      },
+      {
+        default: () => h(icon),
+      }
+    );
+  };
+};
+
 async function updateData() {
   const plugin_names = await (await fetch(serverUrl + "/api/plugins")).json();
 
@@ -47,6 +86,33 @@ async function updateData() {
     ).json();
     dataRef.push(plugin);
   }
+}
+
+function getPluginOptions(row: Plugin) {
+  const options: DropdownMixedOption[] = [
+    {
+      label: "GitHub",
+      key: "github",
+      icon: renderIcon(LogoGithub),
+      props: {
+        onClick: () => window.open(row.repo_url),
+      },
+    },
+    {
+      label: "Delete",
+      key: "delete",
+      icon: renderIcon(TrashOutline),
+      props: {
+        onClick: async () => {
+          await fetch(`${serverUrl}/api/plugins/remove-plugin/${row.name}`, {
+            method: "POST",
+          });
+          updateData();
+        },
+      },
+    },
+  ];
+  return options;
 }
 
 const createColumns2 = ({
@@ -125,6 +191,22 @@ const createColumns2 = ({
     },
     filter: "default",
   },
+  {
+    title: "",
+    width: 60,
+    key: "menu",
+    render(row) {
+      return h(
+        NDropdown,
+        {
+          trigger: "hover",
+          options: getPluginOptions(row),
+        },
+        { default: renderIcon(Menu) }
+      );
+    },
+    filter: "default",
+  },
 ];
 
 let columns = createColumns2({
@@ -174,14 +256,32 @@ let columns = createColumns2({
   },
 });
 
+function installPlugin() {
+  const plugin_name = prompt("Enter plugin url:");
+
+  if (plugin_name) {
+    fetch(
+      `${serverUrl}/api/plugins/install-plugin?url=${encodeURIComponent(
+        plugin_name
+      )}`,
+      {
+        method: "POST",
+      }
+    ).then(() => {
+      updateData();
+    });
+  }
+}
+
 const columnsRef = reactive(columns);
 const dataRef = reactive(data);
 const pagination = reactive({ pageSize: 10 });
 updateData();
 </script>
 
-<style>
-/* .xxx {
-  cursor: ;
-} */
+<style scoped>
+.install {
+  width: 100%;
+  padding: 10px 0px;
+}
 </style>

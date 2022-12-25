@@ -5,8 +5,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from api.routes import (bot, config, errors, extensions, guild, notifications,
-                        plugins, system, ws)
+from api.routes import (
+    bot,
+    config,
+    errors,
+    extensions,
+    guild,
+    notifications,
+    plugins,
+    system,
+    ws,
+)
 
 logger = logging.getLogger(__name__)
 origins = [

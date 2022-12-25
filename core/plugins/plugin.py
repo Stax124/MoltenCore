@@ -1,7 +1,8 @@
 import json
 import logging
 import os
-import shutil
+import pathlib
+import stat
 import traceback
 from typing import TYPE_CHECKING, Optional
 
@@ -15,6 +16,7 @@ from discord.ext.commands.errors import (
 from git.repo import Repo
 from sqlmodel import select
 
+from core.functions.delete import delete_folder
 from core.parser.github_parser import Repository
 from core.plugins.plugin_encoder import PluginEncoder
 from models.plugins import PluginData, PluginPermission, PluginPermissions
@@ -288,13 +290,25 @@ class Plugin:
             return False
 
     async def remove(self):
-        "Removes the plugin files"
+        "Removes the plugin files, database entries and the plugin folder"
 
         self.logger.info(f"Removing plugin {self.name}")
         await self.unload()
+
+        # Remove the database entries
         self.bot.database.delete(self.plugin_data)
         self.bot.database.delete(self.permissions)
-        shutil.rmtree(f"plugins/{self.name}", ignore_errors=True)
+
+        # Commit the changes
+        self.bot.database.commit()
+
+        if self.repo:
+            self.repo.close()
+            del self.repo
+
+        # Remove the folder
+        path = pathlib.Path(f"plugins/{self.name}")
+        delete_folder(path)
 
     def get_requirements(self) -> list[str]:
         "Reads the requirements.txt file and returns a list of requirements"

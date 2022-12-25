@@ -23,7 +23,12 @@ class Task:
 
     def run(self):
         logger.debug(f"Running task {self.id}")
-        asyncio.ensure_future(self.task)
+        try:
+            asyncio.ensure_future(self.task)
+        except Exception as e:
+            logger.error(f"Task {self.id} failed")
+            logger.error(e)
+            self.status = Status.error
 
 
 class Queue:

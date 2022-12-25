@@ -35,4 +35,4 @@ frontend/node_modules
 
 # Docs
 **/**/node_modules
-docs/.vuepress
+docs/.vitepress/cache

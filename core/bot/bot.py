@@ -29,7 +29,7 @@ def get_prefix(bot: "ModularBot", msg: discord.Message) -> list[str]:
     if msg.channel.type == discord.ChannelType.private:
         return commands.when_mentioned_or("!")(bot, msg)  # type: ignore
     else:
-        if msg.guild == None:
+        if msg.guild is None:
             return commands.when_mentioned_or("!")(bot, msg)  # type: ignore
 
         statement = select(Guild).where(Guild.id == msg.guild.id)

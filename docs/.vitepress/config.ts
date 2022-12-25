@@ -14,6 +14,20 @@ export default defineConfig({
 				items: [{ text: "Introduction", link: "/" }],
 				collapsible: true,
 			},
+			{
+				text: "Plugins",
+				items: [
+					{
+						text: "Introduction to plugins",
+						link: "/plugins/introduction",
+					},
+					{
+						text: "Example",
+						link: "/plugins/example",
+					},
+				],
+				collapsible: true,
+			},
 		],
 		editLink: {
 			pattern: "https://github.com/Stax124/MoltenCore/edit/main/docs/:path",

@@ -1,0 +1,2 @@
+class URLException(Exception):
+    pass

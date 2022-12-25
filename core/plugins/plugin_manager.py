@@ -1,11 +1,13 @@
 import importlib
 import logging
+import re
 import subprocess
 import sys
 from typing import TYPE_CHECKING
 
 from sqlmodel import select
 
+from core.exceptions import URLException
 from core.plugins.plugin import Plugin
 from models.plugins import PluginData
 
@@ -38,6 +40,15 @@ class PluginManager:
         del self.bot.plugins[name]
 
     async def install_plugin(self, url: str) -> None:
+        "Installs a plugin from a remote git repository"
+
+        # mitigation of CVE-2022-24439 - https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858
+        pattern = re.compile(
+            r"[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+        )
+        if not pattern.match(url):
+            raise URLException("Invalid URL")
+
         logger.debug(f"Installing plugin from {url}")
 
         try:
