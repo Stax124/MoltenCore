@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Stax124 <tamoncz@gmail.com>"]
 
+# Dependencies
 [tool.poetry.dependencies]
 python = "^3.10"
 "discord.py" = "2.0.0."
@@ -25,9 +26,9 @@ python-dotenv = "^0.21.0"
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
 pytest = "^7.1.3"
+ruff = "^0.0.196"
 
-[tool.poe.tasks]
-
+# Poe configuration
 [tool.poe.tasks.build]
 help = "Build docker container"
 cmd = "docker build -t moltencore ."
@@ -76,6 +77,23 @@ cmd = "docker tag moltencore:latest stax124/moltencore:latest"
 help = "Test the project"
 cmd = "docker push stax124/moltencore:latest"
 
+[tool.poe.tasks.lint]
+help = "Lint the project"
+cmd = "ruff . --watch"
+
+[tool.poe.tasks.memray]
+help = "Run memray profiler"
+cmd = "python -m memray main.py"
+
+# Ruff configuration
+[tool.ruff]
+ignore = ["E501"]
+fix = true
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+# Build configuration
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

@@ -44,7 +44,7 @@ class ModularEmbed(discord.Embed):
         if config:
             color = config.main_color
 
-        if timestamp == True:
+        if timestamp is True:
             timestamp = datetime.datetime.now()
 
         super().__init__(

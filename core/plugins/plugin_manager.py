@@ -63,7 +63,7 @@ class PluginManager:
 
         plugin = Plugin(new_data, self.bot)
 
-        logger.info(f"Installing requirements")
+        logger.info("Installing requirements")
         self.install_requirements()
 
         await plugin.load()
@@ -101,7 +101,7 @@ class PluginManager:
             plugin = self.bot.plugins[plugin_name]
             recieved = plugin.get_requirements()
             for requirement in recieved:
-                if not requirement in req:
+                if requirement not in req:
                     req.append(requirement)
 
         return req

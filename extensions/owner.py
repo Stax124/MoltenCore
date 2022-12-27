@@ -7,9 +7,9 @@ import discord
 from discord.enums import Status
 from discord.ext import commands
 from discord.ext.commands.context import Context
-from sqlmodel import select  # For eval
+from sqlmodel import select  # noqa: 401 - For eval
 
-import models  # For eval
+import models  # noqa: 401 - For eval
 from core.bot.bot import ModularBot
 from core.functions.confirm import confirm
 from core.structures.embed import ModularEmbedList
@@ -37,7 +37,7 @@ class Owner(commands.Cog):
         logger.info("Shutting down...")
 
         await self.bot.change_presence(
-            activity=discord.Game(name=f"Shutting down..."), status=Status.offline
+            activity=discord.Game(name="Shutting down..."), status=Status.offline
         )
         sys.exit()
 

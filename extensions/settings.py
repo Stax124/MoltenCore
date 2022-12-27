@@ -62,7 +62,7 @@ class Settings(commands.Cog):
             logger.info("Paused...")
 
             await self.bot.change_presence(
-                activity=discord.Game(name=f"Paused"), status=Status.do_not_disturb
+                activity=discord.Game(name="Paused"), status=Status.do_not_disturb
             )
         else:
             embed = discord.Embed(
@@ -91,7 +91,7 @@ class Settings(commands.Cog):
             logger.info("Unpaused...")
 
             await self.bot.change_presence(
-                activity=Activity(name=f"commands", type=ActivityType.listening)
+                activity=Activity(name="commands", type=ActivityType.listening)
             )
         else:
             embed = discord.Embed(

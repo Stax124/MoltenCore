@@ -86,7 +86,7 @@ class Paginator:
         for emoji in self.control_emojis:
             try:
                 await msg.add_reaction(emoji)
-            except:
+            except Exception:
                 pass
 
         msg = await msg.channel.fetch_message(msg.id)
@@ -112,7 +112,7 @@ class Paginator:
                                 await msg.remove_reaction(
                                     str(reaction.emoji), reaction.message.author
                                 )
-                            except:
+                            except Exception:
                                 pass
                     break
             else:
@@ -151,7 +151,7 @@ class Paginator:
                             await msg.remove_reaction(
                                 str(reaction.emoji), reaction.message.author
                             )
-                    except:
+                    except Exception:
                         pass
                 break
 

@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import pathlib
-import stat
 import traceback
 from typing import TYPE_CHECKING, Optional
 

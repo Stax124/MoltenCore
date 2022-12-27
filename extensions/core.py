@@ -3,7 +3,6 @@ import os
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import Context
 from discord.ext.commands.context import Context
 from discord.ext.commands.errors import (
     ExtensionAlreadyLoaded,
@@ -114,11 +113,9 @@ class Core(commands.Cog):
                 break
 
         if ok:
-            embed = discord.Embed(
-                color=0x00FF00, description=f"All extensions reloaded"
-            )
+            embed = discord.Embed(color=0x00FF00, description="All extensions reloaded")
         else:
-            embed = discord.Embed(color=0xFF0000, description=f"Some failiures occured")
+            embed = discord.Embed(color=0xFF0000, description="Some failiures occured")
 
         embed.set_author(name="Reload All", icon_url=self.bot.avatar_url)
         await ctx.send(embed=embed)
@@ -142,9 +139,9 @@ class Core(commands.Cog):
                 break
 
         if ok:
-            embed = discord.Embed(color=0x00FF00, description=f"All plugins reloaded")
+            embed = discord.Embed(color=0x00FF00, description="All plugins reloaded")
         else:
-            embed = discord.Embed(color=0xFF0000, description=f"Some failiures occured")
+            embed = discord.Embed(color=0xFF0000, description="Some failiures occured")
 
         logger.info("----------End of reload----------")
         await ctx.send(embed=embed)

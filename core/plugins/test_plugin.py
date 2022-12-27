@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 
 from core.bot.bot import ModularBot
@@ -23,11 +21,11 @@ def test_id(plugin: Plugin):
 
 
 def test_empty(plugin: Plugin):
-    assert plugin.empty == False
+    assert plugin.empty is False
 
 
 def test_enabled(plugin: Plugin):
-    assert plugin.enabled == True
+    assert plugin.enabled is True
 
 
 def test_repo_url(plugin: Plugin):

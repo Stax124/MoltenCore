@@ -34,7 +34,7 @@ async def pause():
         bot.database.commit()
 
         await bot.change_presence(
-            activity=discord.Game(name=f"Paused"), status=discord.Status.do_not_disturb
+            activity=discord.Game(name="Paused"), status=discord.Status.do_not_disturb
         )
         return {"status": "ok"}
     else:
