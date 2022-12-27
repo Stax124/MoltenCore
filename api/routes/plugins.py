@@ -38,6 +38,15 @@ async def disable_plugin(plugin: str):
         raise HTTPException(status_code=404, detail="Plugin not found")
 
 
+@router.post("/reload-plugin/{plugin}")
+async def reload_plugin(plugin: str):
+    if bot.plugins[plugin]:
+        await run_async(bot.plugins[plugin].reload())
+        return bot.plugins[plugin].to_dict()
+    else:
+        raise HTTPException(status_code=404, detail="Plugin not found")
+
+
 @router.get("/stats")
 async def plugin_stats():
     return {

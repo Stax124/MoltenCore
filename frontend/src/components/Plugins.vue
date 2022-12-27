@@ -22,13 +22,19 @@
 </template>
 
 <script lang="ts" setup>
-import { LogoGithub, Menu, TrashOutline } from "@vicons/ionicons5";
+import {
+  LogoGithub,
+  Menu,
+  ReloadCircleOutline,
+  TrashOutline,
+} from "@vicons/ionicons5";
 import {
   NButton,
   NDataTable,
   NDropdown,
   NIcon,
   NSpace,
+  useNotification,
   type DataTableColumns,
 } from "naive-ui";
 import type { Type as ButtonType } from "naive-ui/es/button/src/interface";
@@ -38,6 +44,7 @@ import { serverUrl } from "../env";
 import { useSyncState } from "../store/syncState";
 
 const syncState = useSyncState();
+const notification = useNotification();
 
 type Plugin = {
   id: number;
@@ -96,6 +103,32 @@ function getPluginOptions(row: Plugin) {
       icon: renderIcon(LogoGithub),
       props: {
         onClick: () => window.open(row.repo_url),
+      },
+    },
+    {
+      label: "Reload",
+      key: "reload",
+      icon: renderIcon(ReloadCircleOutline),
+      props: {
+        onClick: async () => {
+          await fetch(`${serverUrl}/api/plugins/reload-plugin/${row.name}`, {
+            method: "POST",
+          })
+            .catch(() => {
+              notification.error({
+                title: "Error",
+                description: `Failed to reload ${row.name}`,
+                duration: 5000,
+              });
+            })
+            .then(() => {
+              notification.success({
+                title: "Success",
+                description: `Reloaded ${row.name}`,
+                duration: 5000,
+              });
+            });
+        },
       },
     },
     {
