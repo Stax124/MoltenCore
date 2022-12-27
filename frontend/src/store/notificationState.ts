@@ -1,17 +1,15 @@
 import { serverUrl } from "@/env";
 import type { NotificationApiInjection } from "naive-ui/es/notification/src/NotificationProvider";
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import type { NotificationMessage } from "./../websockets/websockets";
 
-const data: NotificationMessage[] = [];
-fetch(`${serverUrl}/api/notifications`, {
-  cache: "no-store",
-}).then((r) => r.json().then((d) => data.push(...d)));
-
-const notifications: NotificationMessage[] = reactive(data);
-
 export const useNotificationState = defineStore("notification", () => {
+  const notifications: NotificationMessage[] = reactive(new Array());
+  fetch(`${serverUrl}/api/notifications`, {
+    cache: "no-store",
+  }).then((r) => r.json().then((d) => notifications.push(...d)));
+
   const push = (
     n: NotificationMessage,
     notification_effect: NotificationApiInjection
@@ -23,5 +21,15 @@ export const useNotificationState = defineStore("notification", () => {
     });
   };
 
-  return { notifications, push };
+  const remove = (n: NotificationMessage) => {
+    notifications.splice(notifications.indexOf(n), 1);
+    fetch(`${serverUrl}/api/notifications/clear/${n.id}`, {
+      method: "POST",
+    });
+    return true;
+  };
+
+  const lenght = computed(() => notifications.length);
+
+  return { notifications, push, lenght, remove };
 });
