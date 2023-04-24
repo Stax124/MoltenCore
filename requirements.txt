@@ -23,7 +23,7 @@ idna==3.4; python_version >= "3.7" and python_version < "4" and python_full_vers
 mako==1.2.4; python_version >= "3.7"
 markupsafe==2.1.1; python_version >= "3.7"
 multidict==6.0.4; python_version >= "3.7" and python_full_version >= "3.8.0"
-psycopg2-binary==2.9.5; python_version >= "3.6"
+psycopg2-binary==2.9.6; python_version >= "3.6"
 pydantic==1.10.2; python_full_version >= "3.6.1" and python_full_version < "4.0.0" and python_version >= "3.7"
 pyreadline3==3.4.1; sys_platform == "win32" and python_version >= "3.8" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0")
 python-dotenv==0.21.0; python_version >= "3.7"
